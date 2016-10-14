@@ -5,12 +5,9 @@ import javax.smartcardio.CardTerminal;
 
 import org.nfctools.NfcAdapter;
 import org.nfctools.api.TagScannerListener;
-import org.nfctools.mf.classic.MfClassicNfcTagListener;
-import org.nfctools.mf.ul.Type2NfcTagListener;
 import org.nfctools.scio.TerminalMode;
 import org.nfctools.spi.acs.AcsTerminal;
 import org.nfctools.utils.CardTerminalUtils;
-import org.nfctools.utils.LoggingUnknownTagListener;
 
 public class Acr122Device extends AcsTerminal implements TagScannerListener {
 
@@ -20,9 +17,7 @@ public class Acr122Device extends AcsTerminal implements TagScannerListener {
         CardTerminal terminal = CardTerminalUtils.getTerminalByName("ACR122");
         setCardTerminal(terminal);
         adapter = new NfcAdapter(this, TerminalMode.INITIATOR, this);
-        adapter.registerTagListener(new Type2NfcTagListener(new LoggerListener()));
-        adapter.registerTagListener(new MfClassicNfcTagListener(new LoggerListener()));
-        adapter.registerUnknownTagListerner(new LoggingUnknownTagListener());
+        adapter.registerTagListener(new TagListener());
     }
 
     @Override
