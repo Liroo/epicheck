@@ -26,7 +26,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
 
         primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root));
         primaryStage.show();
 
         // Set logger
@@ -42,7 +42,7 @@ public class Main extends Application {
                 params.put("id", tag + "9000");
 
                 HttpClient client = new AsyncHttpClient();
-                client.post("http://localhost:3000/getStudent", params, new HttpResponseHandler() {
+                client.post("http://localhost:3000/students/get", params, new HttpResponseHandler() {
                     @Override
                     public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                         System.out.println("response = " + new String(bytes));
