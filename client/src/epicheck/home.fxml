@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXTabPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.MainController">
+   <children>
+      <Pane prefHeight="750.0" prefWidth="1200.0">
+         <children>
+            <JFXTabPane fx:id="tabPane" layoutX="0.0" layoutY="0.0" prefHeight="750.0" prefWidth="1200.0" style="-fx-tab-min-width: 230; -fx-tab-min-height: 40;" />
+         </children></Pane>
+   </children>
+</AnchorPane>
