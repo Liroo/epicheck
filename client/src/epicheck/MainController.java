@@ -59,7 +59,6 @@ public class MainController implements Initializable {
             Autologin (editText)
          */
 
-
         tabPane.getTabs().add(examTab);
         tabPane.getTabs().add(studentTab);
         tabPane.getTabs().add(paramsTab);
