@@ -1,8 +1,11 @@
 package epicheck.utils.nfc;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 public class TagTask {
     public interface TagListener {
-        void scanCard(String tag);
+        void scanCard(JSONObject student);
         void scanError(String error);
     }
     private static TagTask self = null;
@@ -11,7 +14,7 @@ public class TagTask {
     private TagTask() {
         _listener = new TagListener() {
             @Override
-            public void scanCard(String tag) {}
+            public void scanCard(JSONObject res) {}
 
             @Override
             public void scanError(String error) {}
@@ -28,7 +31,7 @@ public class TagTask {
         _listener = listener;
     }
 
-    public void callListener(String tag) {
+    public void callListener(JSONObject tag) {
         _listener.scanCard(tag);
     }
 

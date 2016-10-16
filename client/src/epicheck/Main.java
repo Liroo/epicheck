@@ -17,6 +17,7 @@ import javafx.stage.Stage;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 import javax.net.ssl.*;
 import java.io.IOException;
@@ -74,28 +75,8 @@ public class Main extends Application {
         // Set tag listener
         TagTask.get().setListener(new TagTask.TagListener() {
             @Override
-            public void scanCard(String tag) {
-                System.out.println("Card ID = " + tag);
-                RequestParams params = new RequestParams();
-                params.put("id", tag + "9000");
-
-                HttpClient client = new AsyncHttpClient();
-                client.post("http://localhost:3000/students/get", params, new HttpResponseHandler() {
-                    @Override
-                    public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
-                        System.out.println("response = " + new String(bytes));
-                    }
-
-                    @Override
-                    public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
-                        System.out.println("response error = " + new String(bytes));
-                    }
-
-                    @Override
-                    public void onFailure(Throwable throwable) {
-                        System.out.println("failure");
-                    }
-                });
+            public void scanCard(JSONObject student) {
+                System.out.println(student);
             }
 
             @Override
