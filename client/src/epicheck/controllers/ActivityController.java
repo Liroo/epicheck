@@ -1,14 +1,12 @@
-package epicheck;
+package epicheck.controllers;
 
-import com.jfoenix.controls.JFXTabPane;
 import com.jfoenix.controls.JFXTextField;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
+import epicheck.models.Activity;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-
-import javafx.scene.input.InputMethodEvent;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -38,7 +36,7 @@ public class ActivityController implements Initializable {
 
         tableView.getColumns().addAll(name, module, beginDate, endDate);
 
-        epicheck.Activity.getAllActivities();
+        Activity.getAllActivities();
     }
 
     @FXML

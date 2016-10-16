@@ -1,4 +1,4 @@
-package epicheck;
+package epicheck.models;
 
 import javafx.application.Application;
 

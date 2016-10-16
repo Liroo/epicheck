@@ -1,8 +1,9 @@
-package epicheck;
+package epicheck.utils.nfc;
 
 import java.io.IOException;
 import javax.smartcardio.CardTerminal;
 
+import epicheck.utils.nfc.TagListener;
 import org.nfctools.NfcAdapter;
 import org.nfctools.api.TagScannerListener;
 import org.nfctools.scio.TerminalMode;

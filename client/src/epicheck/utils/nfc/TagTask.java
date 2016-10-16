@@ -1,4 +1,4 @@
-package epicheck;
+package epicheck.utils.nfc;
 
 public class TagTask {
     public interface TagListener {

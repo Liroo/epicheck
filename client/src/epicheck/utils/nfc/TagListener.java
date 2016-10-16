@@ -1,4 +1,4 @@
-package epicheck;
+package epicheck.utils.nfc;
 
 import org.nfctools.api.ApduTag;
 import org.nfctools.api.NfcTagListener;

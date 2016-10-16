@@ -7,6 +7,8 @@ import com.mb3364.http.RequestParams;
 import epicheck.utils.ApiRequest;
 import epicheck.utils.ApiRequest.JSONArrayListener;
 import epicheck.utils.Preferences;
+import epicheck.utils.nfc.Acr122Device;
+import epicheck.utils.nfc.TagTask;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,7 +33,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("home.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("views/home.fxml"));
 
         primaryStage.setTitle("Epicheck");
         primaryStage.setScene(new Scene(root));
@@ -39,12 +41,12 @@ public class Main extends Application {
         primaryStage.show();
 
         TrustAllHttpsDomain();
-        Preferences.get().setAutoLogin("AUTOLOGIN LINK");
+        Preferences.get().setAutoLogin("auth-7a83b1dd2a2de287c8b66e89bdb68a9aaf48a773");
         ApiRequest.get().getActivitiesFromIntra("2016-10-17", "2016-10-22", new JSONArrayListener() {
 
             @Override
             public void onComplete(JSONArray res) {
-
+                System.out.println(res);
             }
 
             @Override
