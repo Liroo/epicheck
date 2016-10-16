@@ -39,7 +39,7 @@ public class Main extends Application {
         primaryStage.show();
 
         TrustAllHttpsDomain();
-        Preferences.get().setAutoLogin("auth-7a83b1dd2a2de287c8b66e89bdb68a9aaf48a773");
+        Preferences.get().setAutoLogin("AUTOLOGIN LINK");
         ApiRequest.get().getActivitiesFromIntra("2016-10-17", "2016-10-22", new JSONArrayListener() {
 
             @Override
