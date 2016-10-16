@@ -17,7 +17,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class MainController implements Initializable{
+public class MainController implements Initializable {
 
     @FXML
     private JFXTabPane tabPane;
@@ -30,10 +30,12 @@ public class MainController implements Initializable{
 
         Pane activityPane = new Pane();
         Pane studentsPane = new Pane();
+        Pane paramsPane = new Pane();
 
         try {
             activityPane = FXMLLoader.load(getClass().getResource("activity.fxml"));
             studentsPane = FXMLLoader.load(getClass().getResource("students.fxml"));
+            paramsPane = FXMLLoader.load(getClass().getResource("params.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -51,6 +53,7 @@ public class MainController implements Initializable{
          */
 
         paramsTab.setText("Paramètres");
+        paramsTab.setContent(paramsPane);
         /*
             Connecter le lecteur / deconnecter
             Autologin (editText)
