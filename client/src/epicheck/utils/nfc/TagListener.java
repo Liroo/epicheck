@@ -4,6 +4,7 @@ import com.mb3364.http.AsyncHttpClient;
 import com.mb3364.http.HttpClient;
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
+import epicheck.utils.ApiUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.nfctools.api.ApduTag;
@@ -16,6 +17,8 @@ import org.nfctools.utils.NfcUtils;
 
 import java.util.List;
 import java.util.Map;
+
+import static epicheck.utils.ApiUtils.RequestType.POST;
 
 public class TagListener implements NfcTagListener {
 
@@ -31,11 +34,8 @@ public class TagListener implements NfcTagListener {
     public void handleTag(Tag tag) {
         MfUlReaderWriter readerWriter = new AcrMfUlReaderWriter((ApduTag)tag);
         try {
-            RequestParams params = new RequestParams();
-            params.put("id", NfcUtils.convertBinToASCII(readerWriter.getTagInfo().getId()) + "9000");
-
-            HttpClient client = new AsyncHttpClient();
-            client.post("http://localhost:3000/students/get", params, new HttpResponseHandler() {
+            RequestParams params = new RequestParams("id", NfcUtils.convertBinToASCII(readerWriter.getTagInfo().getId()) + "9000");
+            ApiUtils.get().exec(POST, "http://localhost:3000/students/get", params, new HttpResponseHandler() {
                 @Override
                 public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                     try {
