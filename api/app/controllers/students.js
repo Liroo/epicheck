@@ -67,7 +67,7 @@ router.post('/add', function(req, res, next) {
             email: req.body["email"],
             activities: []
         });
-        if (req.body["activity"]) {
+        if (req.body["activities"]) {
           async.forEach(req.body["activities"], function(activity, callback) {
               Student.findOne({
                 codeActi: activity.codeActi,

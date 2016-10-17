@@ -11,12 +11,6 @@ module.exports = function(app) {
 };
 
 router.get('/', function(req, res, next) {
-    res.status(200).json({
-        message: "You seems lost, aren't you ?"
-    });
-});
-
-router.get('/list', function(req, res, next) {
     Presence.find().populate('student').populate('activity').exec(function(err, presences) {
       if (err) {
           res.status(500).json(err);

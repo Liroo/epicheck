@@ -4,6 +4,7 @@ import com.mb3364.http.AsyncHttpClient;
 import com.mb3364.http.HttpClient;
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
+import epicheck.utils.ApiRequest;
 import epicheck.utils.ApiUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,25 +35,15 @@ public class TagListener implements NfcTagListener {
     public void handleTag(Tag tag) {
         MfUlReaderWriter readerWriter = new AcrMfUlReaderWriter((ApduTag)tag);
         try {
-            RequestParams params = new RequestParams("id", NfcUtils.convertBinToASCII(readerWriter.getTagInfo().getId()) + "9000");
-            ApiUtils.get().exec(POST, "http://localhost:3000/students/get", params, new HttpResponseHandler() {
+            ApiRequest.get().getStudent(NfcUtils.convertBinToASCII(readerWriter.getTagInfo().getId()) + "9000", new ApiRequest.JSONObjectListener() {
                 @Override
-                public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
-                    try {
-                        TagTask.get().callListener(new JSONObject(new String(bytes)));
-                    } catch (JSONException e) {
-                        TagTask.get().errorListener("Error while reading card");
-                    }
+                public void onComplete(JSONObject res) {
+                    TagTask.get().callListener(res);
                 }
 
                 @Override
-                public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
-                    TagTask.get().errorListener(new String(bytes));
-                }
-
-                @Override
-                public void onFailure(Throwable throwable) {
-                    TagTask.get().errorListener("connection interrupted");
+                public void onFailure(String err) {
+                    TagTask.get().errorListener(err);
                 }
             });
         }
