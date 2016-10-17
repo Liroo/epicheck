@@ -1,15 +1,13 @@
-package epicheck;
+package epicheck.controllers;
 
 /**
  * Created by Kevin on 08/10/2016.
  */
 
 import com.jfoenix.controls.JFXTabPane;
-import com.jfoenix.controls.JFXTreeTableView;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.layout.Pane;
 
@@ -33,9 +31,9 @@ public class MainController implements Initializable {
         Pane paramsPane = new Pane();
 
         try {
-            activityPane = FXMLLoader.load(getClass().getResource("activity.fxml"));
-            studentsPane = FXMLLoader.load(getClass().getResource("students.fxml"));
-            paramsPane = FXMLLoader.load(getClass().getResource("params.fxml"));
+            activityPane = FXMLLoader.load(getClass().getResource("../views/activity.fxml"));
+            studentsPane = FXMLLoader.load(getClass().getResource("../views/students.fxml"));
+            paramsPane = FXMLLoader.load(getClass().getResource("../views/params.fxml"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -58,7 +56,6 @@ public class MainController implements Initializable {
             Connecter le lecteur / deconnecter
             Autologin (editText)
          */
-
 
         tabPane.getTabs().add(examTab);
         tabPane.getTabs().add(studentTab);

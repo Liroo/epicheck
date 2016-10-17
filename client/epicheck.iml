@@ -13,5 +13,6 @@
     <orderEntry type="library" name="de.jensd:fontawesomefx:8.0.13" level="project" />
     <orderEntry type="library" name="async-http-client-2.1.2" level="project" />
     <orderEntry type="library" name="async-http-client-2.1.21" level="project" />
+    <orderEntry type="library" name="org.json:json:20080701" level="project" />
   </component>
 </module>
