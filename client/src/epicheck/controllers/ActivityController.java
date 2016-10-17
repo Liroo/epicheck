@@ -36,6 +36,8 @@ public class ActivityController implements Initializable {
 
         tableView.getColumns().addAll(name, module, beginDate, endDate);
 
+        System.out.println("hello");
+
         Activity.getAllActivities();
     }
 
