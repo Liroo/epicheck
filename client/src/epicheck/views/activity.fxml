@@ -8,21 +8,21 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="750.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
    <children>
       <Pane prefHeight="750.0" prefWidth="1200.0">
          <children>
-            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="73.0" prefHeight="576.0" prefWidth="1167.0" />
-            <JFXTextField fx:id="searchField" layoutX="903.0" layoutY="33.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
+            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="112.0" prefHeight="525.0" prefWidth="1167.0" />
+            <JFXTextField fx:id="searchField" layoutX="903.0" layoutY="57.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font></JFXTextField>
-            <Label layoutX="843.0" layoutY="38.0" text="Filtrer :">
+            <Label layoutX="843.0" layoutY="62.0" text="Filtrer :">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font>
             </Label>
-            <JFXButton layoutX="986.0" layoutY="665.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4;" text="Lancer session" textFill="WHITE">
+            <JFXButton layoutX="986.0" layoutY="655.0" mnemonicParsing="false" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4;" text="Lancer session" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Bold" size="15.0" />
                </font></JFXButton>

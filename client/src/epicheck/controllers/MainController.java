@@ -5,13 +5,25 @@ package epicheck.controllers;
  */
 
 import com.jfoenix.controls.JFXTabPane;
+import com.jfoenix.skins.JFXTabPaneSkin;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.*;
+import javafx.geometry.Insets;
 import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.effect.BlendMode;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.*;
+import javafx.scene.paint.Color;
 
+import java.awt.*;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -57,8 +69,10 @@ public class MainController implements Initializable {
             Autologin (editText)
          */
 
+
         tabPane.getTabs().add(examTab);
         tabPane.getTabs().add(studentTab);
         tabPane.getTabs().add(paramsTab);
     }
+
 }

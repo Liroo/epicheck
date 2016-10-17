@@ -7,6 +7,9 @@ import epicheck.models.Activity;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.cell.PropertyValueFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -34,7 +37,12 @@ public class ActivityController implements Initializable {
         beginDate.setMinWidth(190);
         endDate.setMinWidth(190);
 
+        tableView.setEditable(true);
+
+        name.setCellValueFactory(new PropertyValueFactory<JSONObject, String>("acti_title"));
+
         tableView.getColumns().addAll(name, module, beginDate, endDate);
+
 
         Activity.getAllActivities();
     }

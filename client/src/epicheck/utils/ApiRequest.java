@@ -335,7 +335,8 @@ public class ApiRequest {
         String URL = "http://localhost:3000/students/get";
         RequestParams params = new RequestParams();
         params.put("id", tag);
-        ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
+
+        ApiUtils.get().exec(POST, URL, params, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {

@@ -1,6 +1,5 @@
 package epicheck.utils.nfc;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TagTask {
