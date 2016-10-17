@@ -6,6 +6,7 @@ import epicheck.utils.Preferences;
 import epicheck.utils.nfc.Acr122Device;
 import epicheck.utils.nfc.TagTask;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -29,7 +30,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-
+        Platform.setImplicitExit(false);
         Parent root = FXMLLoader.load(getClass().getResource("views/home.fxml"));
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
@@ -40,7 +41,6 @@ public class Main extends Application {
         primaryStage.show();
 
         TrustAllHttpsDomain();
-        Preferences.get().setAutoLogin("auth-0d20c0d7ace753d6c5f59c419fff465dee138a38");
         ApiRequest.get().getActivitiesFromIntra("2016-10-17", "2016-10-22", new JSONArrayListener() {
 
             @Override
@@ -69,19 +69,6 @@ public class Main extends Application {
         // Set logger
         org.apache.log4j.BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.INFO);
-
-        // Set tag listener
-        TagTask.get().setListener(new TagTask.TagListener() {
-            @Override
-            public void scanCard(JSONObject student) {
-                System.out.println(student);
-            }
-
-            @Override
-            public void scanError(String error) {
-                System.out.println("We handle an error : " + error);
-            }
-        });
     }
 
     public static boolean connect() throws Exception
