@@ -45,8 +45,8 @@ public class ActivityController implements Initializable {
         JFXTreeTableColumn<epicheck.apimodels.Activity, String> beginDate = new JFXTreeTableColumn<>("Date début");
         JFXTreeTableColumn<epicheck.apimodels.Activity, String> endDate = new JFXTreeTableColumn<>("Date fin");
 
-        name.setMinWidth(300);
-        module.setMinWidth(220);
+        name.setMinWidth(400);
+        module.setMinWidth(330);
         beginDate.setMinWidth(190);
         endDate.setMinWidth(190);
         name.setStyle("-fx-alignment: CENTER;");
