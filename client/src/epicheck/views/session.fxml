@@ -7,15 +7,18 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.SessionController">
+<AnchorPane fx:id="root" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.SessionController">
    <children>
       <Pane prefHeight="600.0" prefWidth="1000.0">
          <children>
-            <ImageView fitHeight="262.0" fitWidth="349.0" layoutX="64.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
-            <Label layoutX="64.0" layoutY="407.0" text="Label" />
-            <Label layoutX="64.0" layoutY="439.0" text="Label" />
+            <ImageView fx:id="img_stud" fitHeight="350.0" fitWidth="350.0" layoutX="75.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
+            <Label fx:id="lbl_email" layoutX="75.0" layoutY="400.0" text="Label" />
+            <Label fx:id="lbl_date" layoutX="75.0" layoutY="440.0" text="Label" />
             <JFXTreeTableView fx:id="table" layoutX="500.0" layoutY="20.0" prefHeight="560.0" prefWidth="480.0" />
-            <JFXButton layoutX="208.0" layoutY="542.0" mnemonicParsing="false" onAction="#test" text="Button" />
+            <JFXButton fx:id="btn_connect" layoutX="30.0" layoutY="530.0" mnemonicParsing="false" onAction="#connect" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Connecter le lecteur" textFill="WHITE" />
+            <JFXButton fx:id="btn_delete" layoutX="250.0" layoutY="530.0" mnemonicParsing="false" onAction="#deleteEntry" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Supprimer la sélection" textFill="WHITE" />
+            <Label fx:id="lbl_lecteur" layoutX="30.0" layoutY="498.0" text="Label" />
+
          </children></Pane>
    </children>
 </AnchorPane>

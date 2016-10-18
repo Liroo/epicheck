@@ -51,7 +51,6 @@ public class ApiRequest {
     public void getActivitiesFromIntra(String from, String to, JSONArrayListener call) {
         // format de from et to : yyyy-mm-dd
         String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
-        System.out.println("URL = " + URL);
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -259,8 +258,8 @@ public class ApiRequest {
         });
     }
 
-    public void deleteCheck(String id, JSONObjectListener call) {
-        String URL = apiURL + "check/" + id;
+    public void deleteCheck(String studentId, String activityId, JSONObjectListener call) {
+        String URL = apiURL + "check/" + studentId + "/" + activityId;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {

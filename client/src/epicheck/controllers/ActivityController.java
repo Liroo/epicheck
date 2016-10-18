@@ -2,6 +2,7 @@ package epicheck.controllers;
 
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import epicheck.Main;
 import epicheck.models.Activity;
 import epicheck.utils.ApiRequest;
 import javafx.application.Platform;
@@ -9,6 +10,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,7 +21,9 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Callback;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,14 +58,10 @@ public class ActivityController implements Initializable {
         JFXTreeTableColumn<epicheck.apimodels.Activity, String> beginDate = new JFXTreeTableColumn<>("Date début");
         JFXTreeTableColumn<epicheck.apimodels.Activity, String> endDate = new JFXTreeTableColumn<>("Date fin");
 
-        name.setMinWidth(400);
-        module.setMinWidth(330);
-        beginDate.setMinWidth(190);
-        endDate.setMinWidth(190);
-        name.setStyle("-fx-alignment: CENTER;");
-        module.setStyle("-fx-alignment: CENTER;");
-        beginDate.setStyle("-fx-alignment: CENTER;");
-        endDate.setStyle("-fx-alignment: CENTER;");
+        name.setMaxWidth(400);
+        module.setMaxWidth(330);
+        beginDate.setMaxWidth(190);
+        endDate.setMaxWidth(190);
 
 
         name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
@@ -87,7 +87,7 @@ public class ActivityController implements Initializable {
                         tableView.setRoot(root);
                         tableView.setShowRoot(false);
                     } catch (Exception e) {
-                        System.out.println("Erreur");
+                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez recharger le calendrier", 3000));
                     }
                 });
             }
@@ -104,19 +104,16 @@ public class ActivityController implements Initializable {
 
         if (tableView.getSelectionModel().getSelectedIndex() == -1)
         {
-            JFXSnackbar snack = new JFXSnackbar(rootPane);
-            snack.show("Séléctionnez d'abord une activité", 5000);
+            new JFXSnackbar(rootPane).show("Séléctionnez d'abord une activité", 5000);
             return ;
         }
         
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
         epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
 
-        System.out.println("select = " + activity.toString());
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
-                System.out.println("res = [" + res + "]");
                 Platform.runLater(() -> {
                     try {
                         Stage stage = new Stage();
@@ -126,7 +123,6 @@ public class ActivityController implements Initializable {
                         ApiRequest.get().addActivity(activity.getActiTitle().get(), activity.getDateFrom().get(), activity.getDateTo().get(), activity.getModuleTitle().get(), activity.getScholarYear().get(), activity.getCodeModule().get(), activity.getCodeInstance().get(), activity.getCodeActi().get(), activity.getCodeEvent().get(), res, new ApiRequest.JSONObjectListener() {
                             @Override
                             public void onComplete(JSONObject res) {
-                                System.out.println("res = [" + res + "]");
                                 ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
                                     @Override
                                     public void onComplete(JSONObject res) {
@@ -138,13 +134,19 @@ public class ActivityController implements Initializable {
                                             stage.setTitle("Session de validation");
                                             stage.setScene(scene);
                                             stage.setResizable(false);
+                                            stage.initModality(Modality.WINDOW_MODAL);
+                                            stage.initOwner(Main.primaryStage);
                                             stage.show();
+                                            stage.setOnCloseRequest(we -> {
+                                                ParamsController.refresh();
+                                            });
+
                                         });
                                     }
 
                                     @Override
                                     public void onFailure(String err) {
-                                        System.out.println("err get activity = [" + err + "]");
+                                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                                     }
                                 });
                             }
@@ -164,13 +166,18 @@ public class ActivityController implements Initializable {
                                                     stage.setTitle("Session de validation");
                                                     stage.setScene(scene);
                                                     stage.setResizable(false);
+                                                    stage.initModality(Modality.WINDOW_MODAL);
+                                                    stage.initOwner(Main.primaryStage);
                                                     stage.show();
+                                                    stage.setOnCloseRequest(we -> {
+                                                        ParamsController.refresh();
+                                                    });
                                                 });
                                             }
 
                                             @Override
                                             public void onFailure(String err) {
-                                                System.out.println("err get activity = [" + err + "]");
+                                                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                                             }
                                         });
                                     }

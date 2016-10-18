@@ -163,13 +163,16 @@
 	-fx-background-radius: 2em;
 }
 
+.table-column {
+  -fx-alignment: CENTER;
+}
 
 .jfx-list-cell-container{
-	-fx-alignment: center;
+	-fx-alignment: CENTER;
 }
 .jfx-list-cell-container > .label{
   	-fx-text-fill: BLACK ;
-	-fx-alignment: center;
+	-fx-alignment: CENTER;
 }
 
 
@@ -281,6 +284,7 @@
 /*
  * TREE TABLE CSS
  */
+
 
 .tree-table-view{
 	-fx-tree-table-color: rgba(0, 188, 212, 0.2);

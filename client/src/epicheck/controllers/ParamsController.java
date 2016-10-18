@@ -2,6 +2,7 @@ package epicheck.controllers;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
+import epicheck.utils.ApiRequest;
 import epicheck.utils.Preferences;
 import epicheck.utils.nfc.TagTask;
 import javafx.application.Platform;
@@ -22,25 +23,71 @@ import java.util.ResourceBundle;
 public class ParamsController implements Initializable {
 
     @FXML
-    private JFXTextField autolinkField;
+    private static JFXTextField autolinkField;
 
     @FXML
-    private JFXButton connectBtn;
+    private static JFXButton connectBtn;
 
     @FXML
     private JFXButton applyBtn;
 
     @FXML
-    private Label noUserLabel;
+    private static Label noUserLabel;
 
     @FXML
-    private Label loginLabel;
+    private static Label loginLabel;
 
     @FXML
-    private Label loginTitleLabel;
+    private static Label loginTitleLabel;
 
     @FXML
-    private ImageView userPicture;
+    private static ImageView userPicture;
+
+
+    public static void refresh() {
+        Platform.runLater(() -> {
+            if (epicheck.models.Params.isConnected())
+            {
+                connectBtn.setText("Lecteur connecté");
+            } else {
+                connectBtn.setText("Lecteur déconnecté");
+            }
+
+            autolinkField.setText(Preferences.get().getAutoLogin());
+            userPicture.setVisible(false);
+            loginLabel.setVisible(false);
+            loginTitleLabel.setVisible(false);
+        });
+
+        // Set tag listener
+        TagTask.get().setListener(new TagTask.TagListener() {
+            @Override
+            public void scanCard(JSONObject student) {
+                Platform.runLater(() -> {
+                    userPicture.setVisible(true);
+                    loginLabel.setVisible(true);
+                    loginTitleLabel.setVisible(true);
+                    noUserLabel.setVisible(false);
+                });
+                try {
+                    String studentEmail = student.getString("email");
+
+                    Platform.runLater(() -> {
+                        loginLabel.setText(studentEmail);
+                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
+                    });
+
+                } catch (Exception e) {
+
+                }
+            }
+
+            @Override
+            public void scanError(String error) {
+                System.out.println("We handle an error : " + error);
+            }
+        });
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -60,16 +107,12 @@ public class ParamsController implements Initializable {
                     noUserLabel.setVisible(false);
                 });
                 try {
-                    String studentEmail = student.getJSONObject("student").getString("email");
-
-                    System.out.println("studentEmail = " + studentEmail);
-                    System.out.println("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp");
+                    String studentEmail = student.getString("email");
 
                     Platform.runLater(() -> {
                         loginLabel.setText(studentEmail);
                         userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
                     });
-
 
                 } catch (Exception e) {
 

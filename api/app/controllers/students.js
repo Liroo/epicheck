@@ -156,13 +156,11 @@ router.post('/get', function(req, res, next) {
             email: recordset[0].email
           }, "email activities").populate('activities').exec(function(err, student) {
             if (student) {
-              res.status(200).json({
-                student: student
-              });
+              res.status(200).json(student);
             } else {
-              res.status(200).json({
-                student: { email: recordset[0].email, activities: [] }
-              });
+              res.status(200).json(
+                { email: recordset[0].email, activities: [] }
+              );
             }
           });
         }

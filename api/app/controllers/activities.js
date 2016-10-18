@@ -30,14 +30,14 @@ router.post('/get', function(req, res, next) {
         var studs = [];
         async.forEach(activity.students, function(student, callback) {
           var stud = {
-            email: '',
+            _id: student._id,
+            email: student.email,
             presence: { date: null, valid: false }
           };
           Presence.findOne({
             student: student,
             activity: activity
           }).exec(function (err, presence) {
-            stud.email = student.email;
             if (presence) {
               stud.presence.valid = true;
               stud.presence.date = presence.date;

@@ -26,10 +26,17 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
+
+    public static Stage primaryStage;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
+        this.primaryStage = primaryStage;
+        javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Bold.ttf").toExternalForm(), 15);
+        javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Light.ttf").toExternalForm(), 15);
+        javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Heavy.ttf").toExternalForm(), 15);
+        javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Regular.ttf").toExternalForm(), 15);
 
-        javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/toto.ttf").toExternalForm(),10);
 
         Platform.setImplicitExit(false);
         Parent root = FXMLLoader.load(getClass().getResource("views/home.fxml"));

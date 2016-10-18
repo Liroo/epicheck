@@ -24,8 +24,13 @@ router.get('/', function(req, res, next) {
 
 router.post('/', function(req, res, next) {
     if (req.body["id"] && req.body["email"]) {
+        var now = new Date();
+        now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 2, now.getUTCMinutes(), now.getUTCSeconds())
+        //now.setTime(now.getTime() - now.getTimezoneOffset()*60*1000 );
+        console.log(now);
         var presence = new Presence({
             student: '',
+            date: now,
             activity: ''
         });
         Activity.findOne({
@@ -42,18 +47,29 @@ router.post('/', function(req, res, next) {
                 }, function (err, student) {
                     if (!student) {
                         res.status(404).json({
-                            message: "student not found"
+                            message: "student not registered"
                         });
                     } else {
-                        presence.student = student;
-                        presence.save(function(err) {
-                            if (err) {
-                                res.status(500).json(err);
-                            } else {
-                                res.status(200).json({
-                                    message: "student has been marked present"
-                                });
-                            }
+                        Presence.findOne({
+                          student: student,
+                          activity: activity
+                        }).exec(function(err, pres) {
+                          if (pres) {
+                            res.status(409).json({
+                              message: 'presence already defined'
+                            });
+                          } else {
+                            presence.student = student;
+                            presence.save(function(err) {
+                                if (err) {
+                                    res.status(500).json(err);
+                                } else {
+                                    res.status(200).json({
+                                        message: "student has been marked present"
+                                    });
+                                }
+                            });
+                          }
                         });
                     }
                 });
@@ -64,6 +80,21 @@ router.post('/', function(req, res, next) {
             message: "missing parameter."
         });
     }
+});
+
+router.delete('/:student/:activity', function(req, res, next) {
+    Presence.findOne({
+        student: req.params["student"],
+        activity: req.params["activity"]
+    }).remove().exec(function(err) {
+        if (err) {
+            res.status(500).json(err);
+        } else {
+            res.status(200).json({
+                message: "Student presence has been removed from base"
+            });
+        }
+    });
 });
 
 router.delete('/:id', function(req, res, next) {

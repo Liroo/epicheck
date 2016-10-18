@@ -2,6 +2,7 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -12,7 +13,7 @@
    <children>
       <Pane prefHeight="690.0" prefWidth="1200.0">
          <children>
-            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="79.0" prefHeight="525.0" prefWidth="1167.0" />
+            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="79.0" prefHeight="525.0" prefWidth="1167.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 14;" />
             <JFXTextField fx:id="searchField" layoutX="903.0" layoutY="24.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
@@ -22,10 +23,15 @@
                   <Font name="SF UI Text Light" size="15.0" />
                </font>
             </Label>
-            <JFXButton layoutX="987.0" layoutY="628.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4;" text="Lancer session" textFill="WHITE">
+            <JFXButton layoutX="987.0" layoutY="628.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Lancer session" textFill="WHITE">
                <font>
-                  <Font name="SF UI Text Bold" size="15.0" />
+                  <Font name="SF UI Text Bold" size="40.0" />
                </font></JFXButton>
+            <JFXToggleButton layoutX="9.0" layoutY="9.0" mnemonicParsing="false" text="Activités passées">
+               <font>
+                  <Font name="SF UI Text Semibold" size="15.0" />
+               </font>
+            </JFXToggleButton>
          </children>
       </Pane>
    </children>
