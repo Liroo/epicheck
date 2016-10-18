@@ -118,7 +118,41 @@ public class ApiRequest {
         params.put("codeInstance", codeInstance);
         params.put("codeActi", codeActi);
         params.put("codeEvent", codeEvent);
-        params.put("students", String.valueOf(students));
+        for (int i = 0; i < students.length(); i++) {
+            try {
+                params.put("students[" + i + "][login]", students.getJSONObject(i).getString("login"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        ApiUtils.get().exec(POST, URL, params, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    JSONObject ret = new JSONObject(new String(bytes));
+                    call.onComplete(ret);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("Connection interrupted");
+            }
+        });
+    }
+
+    public void getActivity(String codeActi, String codeEvent, JSONObjectListener call) {
+        String URL = apiURL + "activities/get";
+        RequestParams params = new RequestParams();
+        params.put("codeActi", codeActi);
+        params.put("codeEvent", codeEvent);
         ApiUtils.get().exec(POST, URL, params, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {

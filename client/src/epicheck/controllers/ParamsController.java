@@ -53,27 +53,26 @@ public class ParamsController implements Initializable {
         TagTask.get().setListener(new TagTask.TagListener() {
             @Override
             public void scanCard(JSONObject student) {
-                System.out.println("coucou la carte");
-                userPicture.setVisible(true);
-                loginLabel.setVisible(true);
-                loginTitleLabel.setVisible(true);
-                noUserLabel.setVisible(false);
+                Platform.runLater(() -> {
+                    userPicture.setVisible(true);
+                    loginLabel.setVisible(true);
+                    loginTitleLabel.setVisible(true);
+                    noUserLabel.setVisible(false);
+                });
                 try {
                     String studentEmail = student.getJSONObject("student").getString("email");
 
                     System.out.println("studentEmail = " + studentEmail);
                     System.out.println("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp");
 
-                    Platform.runLater(new Runnable() {
-                        @Override public void run() {
-                            loginLabel.setText(studentEmail);
-                        }
+                    Platform.runLater(() -> {
+                        loginLabel.setText(studentEmail);
+                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
                     });
 
-                    userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
 
                 } catch (Exception e) {
-                    System.out.println("student = [" + student + "]");
+
                 }
             }
 

@@ -2,6 +2,7 @@ var express = require('express');
 var mongoose = require('mongoose');
 var Activity = mongoose.model('Activity');
 var Student = mongoose.model('Student');
+var Presence = mongoose.model('Presence');
 var router = express.Router();
 var async = require("async");
 
@@ -15,6 +16,61 @@ router.get('/', function(req, res, next) {
             activities: activities
         });
     });
+});
+
+router.post('/get', function(req, res, next) {
+  if (req.body["codeActi"] && req.body["codeEvent"]) {
+    Activity.findOne({
+      codeActi: req.body["codeActi"],
+      codeEvent: req.body["codeEvent"]
+    }).populate("students").exec(function(err, activity) {
+      if (!activity) {
+        res.status(500).json(err);
+      } else {
+        var studs = [];
+        async.forEach(activity.students, function(student, callback) {
+          var stud = {
+            email: '',
+            presence: { date: null, valid: false }
+          };
+          Presence.findOne({
+            student: student,
+            activity: activity
+          }).exec(function (err, presence) {
+            stud.email = student.email;
+            if (presence) {
+              stud.presence.valid = true;
+              stud.presence.date = presence.date;
+            }
+            studs.push(stud);
+            callback();
+          });
+        }, function(err) {
+          if (err) {
+            res.status(500).json(err);
+          } else {
+            res.status(200).json({
+              _id: activity._id,
+              actiTitle: activity.actiTitle,
+              dateFrom: activity.dateFrom,
+              dateTo: activity.dateTo,
+              moduleTitle: activity.moduleTitle,
+              scholarYear: activity.scholarYear,
+              codeModule: activity.codeModule,
+              codeInstance: activity.codeInstance,
+              codeActi: activity.codeActi,
+              codeEvent: activity.codeEvent,
+              students: studs
+            });
+          }
+        });
+      }
+    });
+  } else {
+    res.status(222).json({
+      message: 'missing arguments'
+    });
+  }
 });
 
 router.post('/add', function(req, res, next) {
@@ -32,68 +88,81 @@ router.post('/add', function(req, res, next) {
       codeEvent: req.body["codeEvent"],
       students: []
     });
-    async.forEach(req.body["students"], function(student, callback) {
-      if (student && student.email) {
-        Student.findOne({
-          email: student.email
-        }, function(err, stud) {
-          if (!stud) {
-            var newStud = new Student({
-              email: student.email,
-              activities: []
-            });
-            newStud.save(function(err) {
-              if (err) {
-                res.status(500).json(err);
-              } else {
-                Student.findOne({
-                  email: student.email
-                }, function(err, sstud) {
-                  activity.students.push(sstud);
-                  callback();
+    Activity.findOne({
+      codeActi: req.body["codeActi"],
+      codeEvent: req.body["codeEvent"]
+    }).exec(function(err, act) {
+      if (!act) {
+        async.forEach(req.body["students"], function(student, callback) {
+          if (student && student.login) {
+            Student.findOne({
+              email: student.login
+            }, function(err, stud) {
+              if (!stud) {
+                var newStud = new Student({
+                  email: student.login,
+                  activities: []
                 });
+                newStud.save(function(err) {
+                  if (err) {
+                    res.status(500).json(err);
+                  } else {
+                    Student.findOne({
+                      email: student.login
+                    }, function(err, sstud) {
+                      activity.students.push(sstud);
+                      callback();
+                    });
+                  }
+                });
+              } else {
+                activity.students.push(stud);
+                callback();
               }
             });
           } else {
-            activity.students.push(stud);
             callback();
           }
-        });
-      }
-    }, function(err) {
-      activity.save(function(err) {
-        if (err) {
-          res.status(500).json(err);
-        } else {
-          Activity.findOne({
-            codeActi: req.body["codeActi"],
-            codeEvent: req.body["codeEvent"]
-          }).populate("students").exec(function(err, activity) {
-            if (!activity) {
+        }, function(err) {
+          activity.save(function(err) {
+            if (err) {
               res.status(500).json(err);
             } else {
-              async.forEach(activity.students, function (student, callback) {
-                console.log(student);
-                student.activities.push(activity);
-                student.save();
-                callback();
-              }, function(err) {
-                if (err) {
+              Activity.findOne({
+                codeActi: req.body["codeActi"],
+                codeEvent: req.body["codeEvent"]
+              }).populate("students").exec(function(err, activity) {
+                if (!activity) {
                   res.status(500).json(err);
                 } else {
-                  res.status(200).json({
-                    message: "Activity added."
+                  async.forEach(activity.students, function (student, callback) {
+                    console.log(student);
+                    student.activities.push(activity);
+                    student.save();
+                    callback();
+                  }, function(err) {
+                    if (err) {
+                      res.status(500).json(err);
+                    } else {
+                      res.status(200).json({
+                        message: 'Activity added'
+                      });
+                    }
                   });
                 }
               });
             }
           });
-        }
-      });
+        });
+      } else {
+        res.status(409).json({
+          message: 'activity already exist'
+        });
+      }
     });
   } else {
     res.status(222).json({
-      message: "missing parameter."
+      message: 'missing parameter'
     });
   }
 });

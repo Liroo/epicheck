@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.SessionController">
+   <children>
+      <Pane prefHeight="600.0" prefWidth="1000.0">
+         <children>
+            <ImageView fitHeight="262.0" fitWidth="349.0" layoutX="64.0" layoutY="113.0" pickOnBounds="true" preserveRatio="true" />
+            <Label layoutX="64.0" layoutY="407.0" text="Label" />
+            <Label layoutX="64.0" layoutY="439.0" text="Label" />
+            <JFXTreeTableView fx:id="table" layoutX="500.0" layoutY="20.0" prefHeight="560.0" prefWidth="480.0" />
+            <JFXButton layoutX="208.0" layoutY="542.0" mnemonicParsing="false" onAction="#test" text="Button" />
+         </children></Pane>
+   </children>
+</AnchorPane>

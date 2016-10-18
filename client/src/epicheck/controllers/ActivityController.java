@@ -1,9 +1,6 @@
 package epicheck.controllers;
 
-import com.jfoenix.controls.JFXTextField;
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import epicheck.models.Activity;
 import epicheck.utils.ApiRequest;
@@ -13,24 +10,36 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.Stage;
 import javafx.util.Callback;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 import static java.lang.System.in;
+import static java.lang.System.load;
 
 /**
  * Created by Kevin on 15/10/2016.
  */
 public class ActivityController implements Initializable {
+
+    @FXML
+    private AnchorPane rootPane;
 
     @FXML
     private JFXTextField searchField;
@@ -55,33 +64,10 @@ public class ActivityController implements Initializable {
         endDate.setStyle("-fx-alignment: CENTER;");
 
 
-        name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String> param) {
-                return param.getValue().getValue().titleProperty();
-            }
-        });
-
-        module.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String> param) {
-                return param.getValue().getValue().moduleProperty();
-            }
-        });
-
-        beginDate.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String> param) {
-                return param.getValue().getValue().beginDateProperty();
-            }
-        });
-
-        endDate.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String> param) {
-                return param.getValue().getValue().endDateProperty();
-            }
-        });
+        name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
+        module.setCellValueFactory(param -> param.getValue().getValue().getModuleTitle());
+        beginDate.setCellValueFactory(param -> param.getValue().getValue().getDateFrom());
+        endDate.setCellValueFactory(param -> param.getValue().getValue().getDateTo());
 
         ObservableList<epicheck.apimodels.Activity> activities = FXCollections.observableArrayList();
 
@@ -89,22 +75,19 @@ public class ActivityController implements Initializable {
         ApiRequest.get().getActivitiesFromIntra("2016-10-18", "2016-10-18", new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
-                System.out.println("res = " + res);
-                Platform.runLater(new Runnable() {
-                    @Override public void run() {
-                        try {
-                            for (int i = 0; i < res.length(); i++) {
-                                JSONObject obj = res.getJSONObject(i);
-                                System.out.println("obj = " + obj);
-                                activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end")));
-                            }
-                            final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<epicheck.apimodels.Activity>(activities, RecursiveTreeObject::getChildren);
-                            tableView.getColumns().setAll(name, module, beginDate, endDate);
-                            tableView.setRoot(root);
-                            tableView.setShowRoot(false);
-                        } catch (Exception e) {
-                            System.out.println("Erreur");
+                Platform.runLater(() -> {
+                    try {
+                        for (int i = 0; i < res.length(); i++) {
+                            JSONObject obj = res.getJSONObject(i);
+                            activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
+                                    obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
                         }
+                        final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
+                        tableView.getColumns().setAll(name, module, beginDate, endDate);
+                        tableView.setRoot(root);
+                        tableView.setShowRoot(false);
+                    } catch (Exception e) {
+                        System.out.println("Erreur");
                     }
                 });
             }
@@ -114,6 +97,100 @@ public class ActivityController implements Initializable {
             }
         });
 
+    }
+
+    @FXML
+    public void launchActivityScene() throws IOException {
+
+        if (tableView.getSelectionModel().getSelectedIndex() == -1)
+        {
+            JFXSnackbar snack = new JFXSnackbar(rootPane);
+            snack.show("Séléctionnez d'abord une activité", 5000);
+            return ;
+        }
+        
+        RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
+        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
+
+        System.out.println("select = " + activity.toString());
+        activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
+            @Override
+            public void onComplete(JSONArray res) {
+                System.out.println("res = [" + res + "]");
+                Platform.runLater(() -> {
+                    try {
+                        Stage stage = new Stage();
+                        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("../views/session.fxml"));
+                        Parent root = (Parent) loader.load();
+                        SessionController controller = loader.getController();
+                        ApiRequest.get().addActivity(activity.getActiTitle().get(), activity.getDateFrom().get(), activity.getDateTo().get(), activity.getModuleTitle().get(), activity.getScholarYear().get(), activity.getCodeModule().get(), activity.getCodeInstance().get(), activity.getCodeActi().get(), activity.getCodeEvent().get(), res, new ApiRequest.JSONObjectListener() {
+                            @Override
+                            public void onComplete(JSONObject res) {
+                                System.out.println("res = [" + res + "]");
+                                ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                                    @Override
+                                    public void onComplete(JSONObject res) {
+                                        Platform.runLater(() -> {
+                                            controller.setParams(activity, res);
+                                            Scene scene = new Scene(root);
+                                            scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
+
+                                            stage.setTitle("Session de validation");
+                                            stage.setScene(scene);
+                                            stage.setResizable(false);
+                                            stage.show();
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onFailure(String err) {
+                                        System.out.println("err get activity = [" + err + "]");
+                                    }
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                try {
+                                    JSONObject res = new JSONObject(err);
+                                    if (res.getString("message").equals("activity already exist")) {
+                                        ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                                            @Override
+                                            public void onComplete(JSONObject res) {
+                                                Platform.runLater(() -> {
+                                                    controller.setParams(activity, res);
+                                                    Scene scene = new Scene(root);
+                                                    scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
+                                                    stage.setTitle("Session de validation");
+                                                    stage.setScene(scene);
+                                                    stage.setResizable(false);
+                                                    stage.show();
+                                                });
+                                            }
+
+                                            @Override
+                                            public void onFailure(String err) {
+                                                System.out.println("err get activity = [" + err + "]");
+                                            }
+                                        });
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Platform.runLater(() -> new JFXSnackbar(rootPane).show(err, 3000));
+            }
+        });
     }
 
     @FXML
