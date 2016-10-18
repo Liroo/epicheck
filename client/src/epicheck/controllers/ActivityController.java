@@ -6,6 +6,8 @@ import com.jfoenix.controls.JFXTreeTableView;
 import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import epicheck.models.Activity;
+import epicheck.utils.ApiRequest;
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,9 +18,14 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.util.Callback;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import static java.lang.System.in;
 
 /**
  * Created by Kevin on 15/10/2016.
@@ -42,6 +49,11 @@ public class ActivityController implements Initializable {
         module.setMinWidth(220);
         beginDate.setMinWidth(190);
         endDate.setMinWidth(190);
+        name.setStyle("-fx-alignment: CENTER;");
+        module.setStyle("-fx-alignment: CENTER;");
+        beginDate.setStyle("-fx-alignment: CENTER;");
+        endDate.setStyle("-fx-alignment: CENTER;");
+
 
         name.setCellValueFactory(new Callback<TreeTableColumn.CellDataFeatures<epicheck.apimodels.Activity, String>, ObservableValue<String>>() {
             @Override
@@ -71,22 +83,37 @@ public class ActivityController implements Initializable {
             }
         });
 
-
         ObservableList<epicheck.apimodels.Activity> activities = FXCollections.observableArrayList();
-        activities.add(new epicheck.apimodels.Activity("Exam Reseau", "B5 - Reseaux", "19/09/2016 16H00", "19/09/2016 19H00"));
-        activities.add(new epicheck.apimodels.Activity("KickOff 303", "B5 - Mathématiques", "19/09/2016 09H00", "19/09/2016 10H00"));
-        activities.add(new epicheck.apimodels.Activity("Bootstrap 303", "B5 - Mathématiques", "19/09/2016 10H00", "19/09/2016 11H00"));
 
+        HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
+        ApiRequest.get().getActivitiesFromIntra("2016-10-18", "2016-10-18", new ApiRequest.JSONArrayListener() {
+            @Override
+            public void onComplete(JSONArray res) {
+                System.out.println("res = " + res);
+                Platform.runLater(new Runnable() {
+                    @Override public void run() {
+                        try {
+                            for (int i = 0; i < res.length(); i++) {
+                                JSONObject obj = res.getJSONObject(i);
+                                System.out.println("obj = " + obj);
+                                activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end")));
+                            }
+                            final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<epicheck.apimodels.Activity>(activities, RecursiveTreeObject::getChildren);
+                            tableView.getColumns().setAll(name, module, beginDate, endDate);
+                            tableView.setRoot(root);
+                            tableView.setShowRoot(false);
+                        } catch (Exception e) {
+                            System.out.println("Erreur");
+                        }
+                    }
+                });
+            }
+            @Override
+            public void onFailure(String err) {
+                System.out.println("err = [" + err + "]");
+            }
+        });
 
-        final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<epicheck.apimodels.Activity>(activities, RecursiveTreeObject::getChildren);
-        tableView.getColumns().setAll(name, module, beginDate, endDate);
-        tableView.setRoot(root);
-        tableView.setShowRoot(false);
-
-        System.out.println("hello");
-
-
-        Activity.getAllActivities();
     }
 
     @FXML

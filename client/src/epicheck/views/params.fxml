@@ -21,9 +21,9 @@
                   <Font name="SF UI Text Bold" size="16.0" />
                </font>
             </Label>
-             <JFXButton fx:id="applyBtn" layoutX="990.0" layoutY="665.0" mnemonicParsing="false" onAction="#applyParams" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4;" text="Appliquer" textFill="WHITE">
+             <JFXButton fx:id="applyBtn" layoutX="986.0" layoutY="655.0" mnemonicParsing="false" onAction="#applyParams" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4;" text="Appliquer" textFill="WHITE">
                  <font>
-                     <Font name="SF UI Text Bold" size="15.0" />
+                     <Font name="SF UI Text Heavy" size="19.0" />
                  </font></JFXButton>
             <Label layoutX="27.0" layoutY="173.0" text="Debugging RFID Reader">
                <font>

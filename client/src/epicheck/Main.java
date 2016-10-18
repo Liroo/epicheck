@@ -41,7 +41,7 @@ public class Main extends Application {
         primaryStage.show();
 
         TrustAllHttpsDomain();
-        ApiRequest.get().getActivitiesFromIntra("2016-10-17", "2016-10-22", new JSONArrayListener() {
+       /* ApiRequest.get().getActivitiesFromIntra("2016-10-17", "2016-10-22", new JSONArrayListener() {
 
             @Override
             public void onComplete(JSONArray res) {
@@ -52,7 +52,7 @@ public class Main extends Application {
             public void onFailure(String err) {
                 System.out.println("err = [" + err + "]");
             }
-        });
+        });*/
 
         ApiRequest.get().getStudents(new JSONArrayListener() {
             @Override
