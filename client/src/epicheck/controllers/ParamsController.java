@@ -23,28 +23,28 @@ import java.util.ResourceBundle;
 public class ParamsController implements Initializable {
 
     @FXML
-    private static JFXTextField autolinkField;
+    private JFXTextField autolinkField;
 
     @FXML
-    private static JFXButton connectBtn;
+    private JFXButton connectBtn;
 
     @FXML
     private JFXButton applyBtn;
 
     @FXML
-    private static Label noUserLabel;
+    private Label noUserLabel;
 
     @FXML
-    private static Label loginLabel;
+    private Label loginLabel;
 
     @FXML
-    private static Label loginTitleLabel;
+    private Label loginTitleLabel;
 
     @FXML
-    private static ImageView userPicture;
+    private ImageView userPicture;
 
 
-    public static void refresh() {
+    public void refresh() {
         Platform.runLater(() -> {
             if (epicheck.models.Params.isConnected())
             {

@@ -1,33 +1,21 @@
 package epicheck;
 
-import epicheck.utils.ApiRequest;
-import epicheck.utils.ApiRequest.JSONArrayListener;
-import epicheck.utils.Preferences;
-import epicheck.utils.nfc.Acr122Device;
-import epicheck.utils.nfc.TagTask;
+import epicheck.controllers.MainController;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.text.*;
 import javafx.stage.Stage;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import javax.net.ssl.*;
-import java.awt.*;
-import java.awt.Font;
-import java.io.IOException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
 public class Main extends Application {
 
     public static Stage primaryStage;
+    public static MainController mainController;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -37,9 +25,13 @@ public class Main extends Application {
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Heavy.ttf").toExternalForm(), 15);
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Regular.ttf").toExternalForm(), 15);
 
+        TrustAllHttpsDomain();
 
         Platform.setImplicitExit(false);
-        Parent root = FXMLLoader.load(getClass().getResource("views/home.fxml"));
+        FXMLLoader load = new FXMLLoader(getClass().getResource("views/home.fxml"));
+        Parent root = (Parent) load.load();
+        mainController = load.getController();
+
         Scene scene = new Scene(root);
         scene.getStylesheets().add(Main.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
 
@@ -48,7 +40,6 @@ public class Main extends Application {
         primaryStage.setResizable(false);
         primaryStage.show();
 
-        TrustAllHttpsDomain();
 
         // Set logger
         //org.apache.log4j.BasicConfigurator.configure();

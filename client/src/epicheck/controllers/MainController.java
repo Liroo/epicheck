@@ -32,6 +32,10 @@ public class MainController implements Initializable {
     @FXML
     private JFXTabPane tabPane;
 
+    public ActivityController activityController;
+    public StudentsController studentsController;
+    public ParamsController paramsController;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Tab examTab = new Tab();
@@ -43,9 +47,17 @@ public class MainController implements Initializable {
         Pane paramsPane = new Pane();
 
         try {
-            activityPane = FXMLLoader.load(getClass().getResource("../views/activity.fxml"));
-            studentsPane = FXMLLoader.load(getClass().getResource("../views/students.fxml"));
-            paramsPane = FXMLLoader.load(getClass().getResource("../views/params.fxml"));
+            FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("../views/activity.fxml"));
+            FXMLLoader studentsLoader = new FXMLLoader(getClass().getResource("../views/students.fxml"));
+            FXMLLoader paramsLoader = new FXMLLoader(getClass().getResource("../views/params.fxml"));
+
+            activityPane = (Pane) activityLoader.load();
+            studentsPane = (Pane) studentsLoader.load();
+            paramsPane = (Pane) paramsLoader.load();
+
+            activityController = activityLoader.getController();
+            studentsController = studentsLoader.getController();
+            paramsController = paramsLoader.getController();
         } catch (IOException e) {
             e.printStackTrace();
         }

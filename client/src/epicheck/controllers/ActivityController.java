@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -138,7 +139,7 @@ public class ActivityController implements Initializable {
                                             stage.initOwner(Main.primaryStage);
                                             stage.show();
                                             stage.setOnCloseRequest(we -> {
-                                                ParamsController.refresh();
+                                                Main.mainController.paramsController.refresh();
                                             });
 
                                         });
@@ -170,7 +171,7 @@ public class ActivityController implements Initializable {
                                                     stage.initOwner(Main.primaryStage);
                                                     stage.show();
                                                     stage.setOnCloseRequest(we -> {
-                                                        ParamsController.refresh();
+                                                        Main.mainController.paramsController.refresh();
                                                     });
                                                 });
                                             }
