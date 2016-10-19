@@ -2,14 +2,13 @@
 
 <?import com.jfoenix.controls.JFXButton?>
 <?import com.jfoenix.controls.JFXTextField?>
-<?import com.jfoenix.controls.JFXToggleButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
    <children>
       <Pane prefHeight="690.0" prefWidth="1200.0">
          <children>
@@ -27,11 +26,6 @@
                <font>
                   <Font name="SF UI Text Bold" size="40.0" />
                </font></JFXButton>
-            <JFXToggleButton layoutX="9.0" layoutY="9.0" mnemonicParsing="false" text="Activités passées">
-               <font>
-                  <Font name="SF UI Text Semibold" size="15.0" />
-               </font>
-            </JFXToggleButton>
          </children>
       </Pane>
    </children>
