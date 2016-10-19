@@ -11,7 +11,7 @@
    <children>
       <Pane prefHeight="600.0" prefWidth="1000.0">
          <children>
-            <ImageView fx:id="img_stud" fitHeight="350.0" fitWidth="350.0" layoutX="75.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="img_stud" fitHeight="350.0" fitWidth="295.0" layoutX="75.0" layoutY="20.0" pickOnBounds="true" preserveRatio="true" />
             <Label fx:id="lbl_email" layoutX="75.0" layoutY="400.0" text="Label" />
             <Label fx:id="lbl_date" layoutX="75.0" layoutY="440.0" text="Label" />
             <JFXTreeTableView fx:id="table" layoutX="500.0" layoutY="20.0" prefHeight="560.0" prefWidth="480.0" />

@@ -18,6 +18,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.shape.Circle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -62,7 +63,10 @@ public class SessionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
-            img_stud.setVisible(false);
+            final Circle clip = new Circle(147.5D, 175, 147.5D);
+            img_stud.setVisible(true);
+            img_stud.setClip(clip);
+            img_stud.setImage(new Image("http://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Sunset_2007-1.jpg/640px-Sunset_2007-1.jpg"));
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
