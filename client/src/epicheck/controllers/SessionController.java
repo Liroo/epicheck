@@ -66,7 +66,7 @@ public class SessionController implements Initializable {
             final Circle clip = new Circle(147.5D, 175, 147.5D);
             img_stud.setVisible(true);
             img_stud.setClip(clip);
-            img_stud.setImage(new Image("http://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Sunset_2007-1.jpg/640px-Sunset_2007-1.jpg"));
+            img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/jean.barriere.bmp"));
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
