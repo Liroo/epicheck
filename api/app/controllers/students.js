@@ -48,6 +48,7 @@ router.get('/', function(req, res, next) {
             }, function(err) {
               if (!err)
                 result.push({
+                    _id: student._id,
                     email: student.email,
                     activities: activities
                 });

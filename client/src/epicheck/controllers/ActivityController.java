@@ -182,7 +182,7 @@ public class ActivityController implements Initializable {
                                         });
                                     }
                                 } catch (JSONException e) {
-                                    e.printStackTrace();
+                                    Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                                 }
                             }
                         });

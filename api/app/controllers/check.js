@@ -23,58 +23,66 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-    if (req.body["id"] && req.body["email"]) {
-        var now = new Date();
-        now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 2, now.getUTCMinutes(), now.getUTCSeconds())
-        //now.setTime(now.getTime() - now.getTimezoneOffset()*60*1000 );
-        console.log(now);
-        var presence = new Presence({
-            student: '',
-            date: now,
-            activity: ''
+  if (req.body["id"] && req.body["email"]) {
+    var now = new Date();
+    now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 2, now.getUTCMinutes(), now.getUTCSeconds())
+    //now.setTime(now.getTime() - now.getTimezoneOffset()*60*1000 );
+    console.log(now);
+    var presence = new Presence({
+      student: '',
+      date: now,
+      activity: ''
+    });
+    Activity.findOne({
+      _id: req.body["id"]
+    }, function(err, activity) {
+      if (!activity) {
+        res.status(404).json({
+          message: "activity not found"
         });
-        Activity.findOne({
-            _id: req.body["id"]
-        }, function(err, activity) {
-            if (!activity) {
-                res.status(404).json({
-                    message: "activity not found"
-                });
+      } else {
+        presence.activity = activity;
+        Student.findOne({
+          email: req.body["email"]
+        }, function (err, student) {
+          if (!student) {
+            res.status(404).json({
+              message: "student not found"
+            });
+          } else {
+            var acti = student.activities.find(a => { return (a.toString() === activity._id.toString()); });
+            console.log(acti);
+            if (!acti) {
+              res.status(404).json({
+                message: "student not registered"
+              });
             } else {
-                presence.activity = activity;
-                Student.findOne({
-                    email: req.body["email"]
-                }, function (err, student) {
-                    if (!student) {
-                        res.status(404).json({
-                            message: "student not registered"
-                        });
+              Presence.findOne({
+                student: student,
+                activity: activity
+              }).exec(function(err, pres) {
+                if (pres) {
+                  res.status(409).json({
+                    message: 'presence already defined'
+                  });
+                } else {
+                  presence.student = student;
+                  presence.save(function(err) {
+                    if (err) {
+                      res.status(500).json(err);
                     } else {
-                        Presence.findOne({
-                          student: student,
-                          activity: activity
-                        }).exec(function(err, pres) {
-                          if (pres) {
-                            res.status(409).json({
-                              message: 'presence already defined'
-                            });
-                          } else {
-                            presence.student = student;
-                            presence.save(function(err) {
-                                if (err) {
-                                    res.status(500).json(err);
-                                } else {
-                                    res.status(200).json({
-                                        message: "student has been marked present"
-                                    });
-                                }
-                            });
-                          }
-                        });
+                      res.status(200).json({
+                        message: "student has been marked present"
+                      });
                     }
-                });
+                  });
+                }
+              });
             }
+          }
         });
+      }
+    });
     } else {
         res.status(222).json({
             message: "missing parameter."
