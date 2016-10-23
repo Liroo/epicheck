@@ -94,9 +94,6 @@
 
 
 
-.jfx-check-box{
-    -fx-font-weight: BOLD;
-}
 
 .custom-jfx-check-box{
     -fx-checked-color: RED;

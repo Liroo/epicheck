@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 public class StudentsController implements Initializable {
 
     @FXML
-    private Circle circleImg;
+    private Circle circleClip;
 
     @FXML
     private ImageView profilePicture;
@@ -24,9 +24,9 @@ public class StudentsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         Platform.runLater(() -> {
-            final Circle clip = new Circle(147.5D, 175, 147.5D);
-            profilePicture.setClip(clip);
+            final Circle clip = new Circle(55D, 55D, 55);
             profilePicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/kevin.empociello.bmp"));
+            profilePicture.setClip(clip);
         });
 
     }
