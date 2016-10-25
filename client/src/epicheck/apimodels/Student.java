@@ -25,9 +25,11 @@ public class Student extends RecursiveTreeObject<Student> {
     }
 
     public StringProperty getDate() {
+        if (date.get().equals("null"))
+            return (new SimpleStringProperty(""));
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            DateFormat extern = new SimpleDateFormat("HH:mm:ss");
+            DateFormat extern = new SimpleDateFormat("HH:mm");
             Date date_ret = format.parse(date.get());
             return (new SimpleStringProperty(extern.format(date_ret)));
         } catch (ParseException e) {

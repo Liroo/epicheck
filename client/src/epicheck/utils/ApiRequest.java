@@ -2,6 +2,7 @@ package epicheck.utils;
 
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
+import epicheck.utils.ApiUtils.ApiVars;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -16,10 +17,8 @@ import static epicheck.utils.ApiUtils.RequestType.POST;
 /**
  * Created by jean on 16/10/16.
  */
-public class ApiRequest {
+public class ApiRequest implements ApiVars {
     private static ApiRequest self = null;
-
-    private static String apiURL = "http://10.10.253.62:3000/";
 
     public interface JSONArrayListener {
         void onComplete(JSONArray res);
@@ -50,7 +49,7 @@ public class ApiRequest {
 
     public void getActivitiesFromIntra(String from, String to, JSONArrayListener call) {
         // format de from et to : yyyy-mm-dd
-        String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
+        String URL = intraUrl + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -79,7 +78,7 @@ public class ApiRequest {
      */
 
     public void getActivities(JSONArrayListener call) {
-        String URL = apiURL + "activities";
+        String URL = apiUrl + "activities";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -106,7 +105,7 @@ public class ApiRequest {
 
     public void addActivity(String actiTitle, String dateFrom, String dateTo, String moduleTitle, String scholarYear, String codeModule, String codeInstance,
                             String codeActi, String codeEvent, JSONArray students, JSONObjectListener call) {
-        String URL = apiURL + "activities/add";
+        String URL = apiUrl + "activities/add";
         RequestParams params = new RequestParams();
         params.put("actiTitle", actiTitle);
         params.put("dateFrom", dateFrom);
@@ -148,7 +147,7 @@ public class ApiRequest {
     }
 
     public void getActivity(String codeActi, String codeEvent, JSONObjectListener call) {
-        String URL = apiURL + "activities/get";
+        String URL = apiUrl + "activities/get";
         RequestParams params = new RequestParams();
         params.put("codeActi", codeActi);
         params.put("codeEvent", codeEvent);
@@ -176,7 +175,7 @@ public class ApiRequest {
     }
 
     public void deleteActivity(String id, JSONObjectListener call) {
-        String URL = apiURL + "activities/" + id;
+        String URL = apiUrl + "activities/" + id;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -205,7 +204,7 @@ public class ApiRequest {
      */
 
     public void getChecks(JSONArrayListener call) {
-        String URL = apiURL + "check";
+        String URL = apiUrl + "check";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -231,7 +230,7 @@ public class ApiRequest {
     }
 
     public void addCheck(String activityId, String email, JSONObjectListener call) {
-        String URL = apiURL + "check";
+        String URL = apiUrl + "check";
         RequestParams params = new RequestParams();
         params.put("id", activityId);
         params.put("email", email);
@@ -259,7 +258,7 @@ public class ApiRequest {
     }
 
     public void deleteCheck(String studentId, String activityId, JSONObjectListener call) {
-        String URL = apiURL + "check/" + studentId + "/" + activityId;
+        String URL = apiUrl + "check/" + studentId + "/" + activityId;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -288,7 +287,7 @@ public class ApiRequest {
      */
 
     public void getStudents(JSONArrayListener call) {
-        String URL = apiURL + "students";
+        String URL = apiUrl + "students";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -314,7 +313,7 @@ public class ApiRequest {
     }
 
     public void addStudent(String email, JSONArray activities, JSONObjectListener call) {
-        String URL = apiURL + "students/add";
+        String URL = apiUrl + "students/add";
         RequestParams params = new RequestParams();
         params.put("activities", String.valueOf(activities));
         params.put("email", email);
@@ -342,7 +341,7 @@ public class ApiRequest {
     }
 
     public void deleteStudent(String email, JSONObjectListener call) {
-        String URL = apiURL + "students/" + email;
+        String URL = apiUrl + "students/" + email;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -367,7 +366,7 @@ public class ApiRequest {
     }
 
     public void getStudent(String tag, JSONObjectListener call) {
-        String URL = apiURL + "students/get";
+        String URL = apiUrl + "students/get";
         RequestParams params = new RequestParams();
         params.put("id", tag);
         ApiUtils.get().exec(POST, URL, params, new HttpResponseHandler() {

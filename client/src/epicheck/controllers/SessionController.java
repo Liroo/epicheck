@@ -17,12 +17,15 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -66,7 +69,8 @@ public class SessionController implements Initializable {
             final Circle clip = new Circle(147.5D, 175, 147.5D);
             img_stud.setVisible(true);
             img_stud.setClip(clip);
-            img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/jean.barriere.bmp"));
+            img_stud.setImage(new Image(getClass().getResource("/resources/images/default_student.jpg").toExternalForm()));
+            img_stud.setSmooth(true);
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
@@ -183,11 +187,10 @@ public class SessionController implements Initializable {
         email.setEditable(true);
         check.setEditable(true);
 
-        email.setMinWidth(240);
-        check.setMinWidth(220);
+        email.setMaxWidth(260);
+        check.setMinWidth(200);
 
         students = FXCollections.observableArrayList();
-
 
         try {
             JSONArray studs = activity_json.getJSONArray("students");
