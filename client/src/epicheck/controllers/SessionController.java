@@ -36,7 +36,7 @@ import java.util.ResourceBundle;
 /**
  * Created by jean on 18/10/16.
  */
-public class SessionController implements Initializable {
+public class SessionController extends AbstractSession implements Initializable {
     private Activity activity;
     private JSONObject activity_json;
 

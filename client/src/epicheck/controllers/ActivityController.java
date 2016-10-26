@@ -103,9 +103,74 @@ public class ActivityController implements Initializable {
                 System.out.println("err = [" + err + "]");
             }
         });
+    }
 
 
+    private void launchWindow(String scene_title, Parent root)
+    {
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
 
+        Stage stage = new Stage();
+        stage.setTitle(scene_title);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(Main.primaryStage);
+        stage.show();
+        stage.setOnCloseRequest(we -> {
+            Main.mainController.paramsController.refresh();
+        });
+    }
+
+    private void newWindow(String scene_fxml, String scene_title, epicheck.apimodels.Activity activity, JSONArray students) throws IOException {
+        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource(scene_fxml));
+        Parent root = loader.load();
+        AbstractSession controller = loader.getController();
+        ApiRequest.get().addActivity(activity.getActiTitle().get(), activity.getDateFrom().get(), activity.getDateTo().get(), activity.getModuleTitle().get(), activity.getScholarYear().get(), activity.getCodeModule().get(), activity.getCodeInstance().get(), activity.getCodeActi().get(), activity.getCodeEvent().get(), students, new ApiRequest.JSONObjectListener() {
+            @Override
+            public void onComplete(JSONObject res) {
+                ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                    @Override
+                    public void onComplete(JSONObject res) {
+                        Platform.runLater(() -> {
+                            controller.setParams(activity, res);
+                            launchWindow(scene_title, root);
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String err) {
+                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+                try {
+                    JSONObject res = new JSONObject(err);
+                    if (res.getString("message").equals("activity already exist")) {
+                        ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                            @Override
+                            public void onComplete(JSONObject res) {
+                                Platform.runLater(() -> {
+                                    controller.setParams(activity, res);
+                                    launchWindow(scene_title, root);
+                                });
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
+                }
+            }
+        });
     }
 
     @FXML
@@ -120,82 +185,17 @@ public class ActivityController implements Initializable {
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
         epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
 
+        boolean prev = true;
+
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
                 Platform.runLater(() -> {
                     try {
-                        Stage stage = new Stage();
-                        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("../views/session.fxml"));
-                        Parent root = (Parent) loader.load();
-                        SessionController controller = loader.getController();
-                        ApiRequest.get().addActivity(activity.getActiTitle().get(), activity.getDateFrom().get(), activity.getDateTo().get(), activity.getModuleTitle().get(), activity.getScholarYear().get(), activity.getCodeModule().get(), activity.getCodeInstance().get(), activity.getCodeActi().get(), activity.getCodeEvent().get(), res, new ApiRequest.JSONObjectListener() {
-                            @Override
-                            public void onComplete(JSONObject res) {
-                                ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
-                                    @Override
-                                    public void onComplete(JSONObject res) {
-                                        Platform.runLater(() -> {
-                                            controller.setParams(activity, res);
-                                            Scene scene = new Scene(root);
-                                            scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
-
-                                            stage.setTitle("Session de validation");
-                                            stage.setScene(scene);
-                                            stage.setResizable(false);
-                                            stage.initModality(Modality.WINDOW_MODAL);
-                                            stage.initOwner(Main.primaryStage);
-                                            stage.show();
-                                            stage.setOnCloseRequest(we -> {
-                                                Main.mainController.paramsController.refresh();
-                                            });
-
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onFailure(String err) {
-                                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void onFailure(String err) {
-                                try {
-                                    JSONObject res = new JSONObject(err);
-                                    if (res.getString("message").equals("activity already exist")) {
-                                        ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
-                                            @Override
-                                            public void onComplete(JSONObject res) {
-                                                Platform.runLater(() -> {
-                                                    controller.setParams(activity, res);
-                                                    Scene scene = new Scene(root);
-                                                    scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
-                                                    stage.setTitle("Session de validation");
-                                                    stage.setScene(scene);
-                                                    stage.setResizable(false);
-                                                    stage.initModality(Modality.WINDOW_MODAL);
-                                                    stage.initOwner(Main.primaryStage);
-                                                    stage.show();
-                                                    stage.setOnCloseRequest(we -> {
-                                                        Main.mainController.paramsController.refresh();
-                                                    });
-                                                });
-                                            }
-
-                                            @Override
-                                            public void onFailure(String err) {
-                                                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
-                                            }
-                                        });
-                                    }
-                                } catch (JSONException e) {
-                                    Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
-                                }
-                            }
-                        });
-
+                        if (prev)
+                            newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);
+                        else
+                            newWindow("../views/session.fxml", "Session de validation", activity, res);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
