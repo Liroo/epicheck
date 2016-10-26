@@ -127,13 +127,13 @@
                   <Font name="SF UI Text Bold" size="16.0" />
                </font>
             </Label>
-            <JFXTextField layoutX="76.0" layoutY="73.0" maxWidth="208.0" minWidth="198.0" prefHeight="19.0" prefWidth="208.0" promptText="kevin.empociello">
-               <font>
-                  <Font name="SF UI Text Light" size="13.0" />
-               </font></JFXTextField>
-            <Label layoutX="22.0" layoutY="77.0" text="Filter :">
+            <JFXTextField layoutX="75.0" layoutY="60.0" maxWidth="208.0" minWidth="198.0" prefHeight="19.0" prefWidth="208.0" promptText="kevin.empociello">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
+               </font></JFXTextField>
+            <Label layoutX="22.0" layoutY="64.0" text="Filter :">
+               <font>
+                  <Font name="SF UI Text Light" size="16.0" />
                </font>
             </Label>
          </children></Pane>
