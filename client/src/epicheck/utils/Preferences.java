@@ -29,4 +29,15 @@ public class Preferences {
             prefs.flush();
         } catch (BackingStoreException e) {}
     }
+
+    public String getEmailList() {
+        return (prefs.get("emaillist", ""));
+    }
+
+    public void setEmailList(String list) {
+        try {
+            prefs.put("emaillist", list);
+            prefs.flush();
+        } catch (BackingStoreException e) {}
+    }
 }

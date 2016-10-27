@@ -7,6 +7,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
 import java.security.KeyManagementException;
@@ -19,6 +21,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        // Set logger
+        org.apache.log4j.BasicConfigurator.configure();
+        Logger.getRootLogger().setLevel(Level.INFO);
+
         this.primaryStage = primaryStage;
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Bold.ttf").toExternalForm(), 15);
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Light.ttf").toExternalForm(), 15);
@@ -29,7 +35,7 @@ public class Main extends Application {
 
         Platform.setImplicitExit(false);
         FXMLLoader load = new FXMLLoader(getClass().getResource("views/home.fxml"));
-        Parent root = (Parent) load.load();
+        Parent root = load.load();
         mainController = load.getController();
 
         Scene scene = new Scene(root);
@@ -39,11 +45,10 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
         primaryStage.show();
-
-
-        // Set logger
-        //org.apache.log4j.BasicConfigurator.configure();
-        //Logger.getRootLogger().setLevel(Level.INFO);
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            Platform.exit();
+            System.exit(0);
+        });     
     }
 
     public static void main(String[] args) {

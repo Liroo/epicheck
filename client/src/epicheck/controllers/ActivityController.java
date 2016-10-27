@@ -189,7 +189,7 @@ public class ActivityController implements Initializable {
         }
         
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
-        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
+        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue() ;
 
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
