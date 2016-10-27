@@ -48,7 +48,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(windowEvent -> {
             Platform.exit();
             System.exit(0);
-        });     
+        });
     }
 
     public static void main(String[] args) {
