@@ -84,6 +84,10 @@ public class ActivityController implements Initializable {
         activities = FXCollections.observableArrayList();
         searchActivities = FXCollections.observableArrayList();
         oldSessions = FXCollections.observableArrayList();
+<<<<<<< HEAD
+
+=======
+>>>>>>> 259595471c0bdae73d09a1fc0b2dcc9ad1a6777d
 
         HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
@@ -195,7 +199,11 @@ public class ActivityController implements Initializable {
         }
         
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
+<<<<<<< HEAD
         epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
+=======
+        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue() ;
+>>>>>>> 259595471c0bdae73d09a1fc0b2dcc9ad1a6777d
 
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
@@ -276,6 +284,7 @@ public class ActivityController implements Initializable {
         }
     }
 
+<<<<<<< HEAD
     public String getToday() {
         Date date = new Date(); // your date
         Calendar cal = Calendar.getInstance();
@@ -284,4 +293,7 @@ public class ActivityController implements Initializable {
 
         return today;
     }
+
+=======
+>>>>>>> 259595471c0bdae73d09a1fc0b2dcc9ad1a6777d
 }
