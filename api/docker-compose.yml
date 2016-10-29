@@ -1,0 +1,19 @@
+nodejs:
+  environment:
+    - NODE_ENV=dev
+  env_file:
+    - sql_env.env
+  build: ./
+  links:
+    - database
+  volumes:
+    - ./:/src
+  ports:
+    - "3000:3000"
+    - "5000:5000"
+database:
+  image: mongo
+  volumes:
+    - ./db:/data/db
+  ports:
+    - 27017
