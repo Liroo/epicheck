@@ -50,12 +50,20 @@ public class ApiRequest implements ApiVars {
     public void getActivitiesFromIntra(String from, String to, JSONArrayListener call) {
         // format de from et to : yyyy-mm-dd
         String URL = intraUrl + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
+        System.out.println("URL = " + URL);
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {
                     JSONArray ret = new JSONArray(new String(bytes));
-                    call.onComplete(ret);
+                    JSONArray sel = new JSONArray();
+                    for (int j = 0; j < ret.length(); j++) {
+                        JSONObject obj = ret.getJSONObject(j);
+                        if (obj.has("acti_title")) {
+                            sel.put(obj);
+                        }
+                    }
+                    call.onComplete(sel);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

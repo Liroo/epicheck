@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import static java.lang.System.in;
@@ -52,8 +54,13 @@ public class ActivityController implements Initializable {
     @FXML
     private JFXTreeTableView tableView;
 
+    @FXML
+    private JFXToggleButton pastActivity;
+
     private ObservableList<epicheck.apimodels.Activity> activities;
+    private ObservableList<epicheck.apimodels.Activity> oldSessions;
     private ObservableList<epicheck.apimodels.Activity> searchActivities;
+
     private JSONArray activities_json;
 
     @Override
@@ -76,9 +83,11 @@ public class ActivityController implements Initializable {
 
         activities = FXCollections.observableArrayList();
         searchActivities = FXCollections.observableArrayList();
+        oldSessions = FXCollections.observableArrayList();
+
 
         HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
-        ApiRequest.get().getActivitiesFromIntra("2016-10-18", "2016-10-18", new ApiRequest.JSONArrayListener() {
+        ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
                 activities_json = res;
@@ -86,8 +95,12 @@ public class ActivityController implements Initializable {
                     try {
                         for (int i = 0; i < res.length(); i++) {
                             JSONObject obj = res.getJSONObject(i);
-                            activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
-                                    obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+                            try {
+                                activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
+                                        obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+                            } catch (Exception e) {
+                                System.out.println("e = " + e);
+                            }
                         }
                         final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
                         tableView.getColumns().setAll(name, module, beginDate, endDate);
@@ -185,14 +198,12 @@ public class ActivityController implements Initializable {
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
         epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
 
-        boolean prev = true;
-
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
                 Platform.runLater(() -> {
                     try {
-                        if (prev)
+                        if (pastActivity.isSelected())
                             newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);
                         else
                             newWindow("../views/session.fxml", "Session de validation", activity, res);
@@ -226,6 +237,53 @@ public class ActivityController implements Initializable {
         }
         final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(searchActivities, RecursiveTreeObject::getChildren);
         Platform.runLater(() -> tableView.setRoot(root));
+    }
+
+    public void changeActivityState() {
+        if (pastActivity.isSelected() == true) {
+            if (oldSessions.size() > 0) {
+                final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
+                Platform.runLater(() -> tableView.setRoot(root));
+                return;
+            }
+            ApiRequest.get().getActivities(new ApiRequest.JSONArrayListener() {
+                @Override
+                public void onComplete(JSONArray res) {
+                    Platform.runLater(() -> {
+                        try {
+                            for (int i = 0; i < res.length(); i++) {
+                                JSONObject obj = res.getJSONObject(i);
+                                oldSessions.add(new epicheck.apimodels.Activity(obj.getString("actiTitle"), obj.getString("moduleTitle"), obj.getString("dateFrom"), obj.getString("dateTo"),
+                                        obj.getString("scholarYear"), obj.getString("codeModule"), obj.getString("codeInstance"), obj.getString("codeActi"), obj.getString("codeEvent")));
+                            }
+                            final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
+                            Platform.runLater(() -> tableView.setRoot(root));
+                        } catch (Exception e) {
+                            System.out.println(e.toString());
+                            Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez recharger le calendrier", 3000));
+                            pastActivity.setSelected(false);
+                        }
+                    });
+                }
+
+                @Override
+                public void onFailure(String err) {
+                }
+
+            });
+        } else {
+            final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
+            Platform.runLater(() -> tableView.setRoot(root));
+        }
+    }
+
+    public String getToday() {
+        Date date = new Date(); // your date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String today = "" + cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
+
+        return today;
     }
 
 }
