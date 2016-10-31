@@ -6,6 +6,8 @@ import epicheck.apimodels.Activity;
 import epicheck.apimodels.Student;
 import epicheck.models.Params;
 import epicheck.utils.ApiRequest;
+import epicheck.utils.MailUtils;
+import epicheck.utils.Preferences;
 import epicheck.utils.nfc.TagTask;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -23,6 +25,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -32,6 +35,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.ResourceBundle;
 
@@ -58,10 +63,10 @@ public class SessionController extends AbstractSession implements Initializable 
     private Label lbl_date;
 
     @FXML
-    private Label lbl_lecteur;
+    private JFXButton btn_connect;
 
     @FXML
-    private JFXButton btn_connect;
+    private JFXCheckBox chkbox_email;
 
     private ObservableList<Student> students;
 
@@ -77,6 +82,7 @@ public class SessionController extends AbstractSession implements Initializable 
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
                 new JFXSnackbar(root).show("Lecteur connecté", 2000);
+                btn_connect.setText("Déconnecter le lecteur");
             } else {
                 new JFXSnackbar(root).show("Lecteur déconnecté", 2000);
                 btn_connect.setText("Connecter le lecteur");
@@ -107,6 +113,18 @@ public class SessionController extends AbstractSession implements Initializable 
                                 if (students.get(i).getEmail().get().equals(studentEmail))
                                     students.get(i).setDate();
                             }
+
+                            activity.forcePresenceUser(studentEmail, "present", new ApiRequest.JSONObjectListener() {
+                                @Override
+                                public void onComplete(JSONObject res) {
+                                    Platform.runLater(() -> new JFXSnackbar(root).show(studentEmail + " has been set present on the intranet", 2000));
+                                }
+
+                                @Override
+                                public void onFailure(String err) {
+                                    Platform.runLater(() -> new JFXSnackbar(root).show("An error occured while setting " + studentEmail + " present", 2000));
+                                }
+                            });
 
                             Platform.runLater(() -> {
                                 TreeItem<Student> root = new RecursiveTreeItem<>(students, RecursiveTreeObject::getChildren);
@@ -160,6 +178,19 @@ public class SessionController extends AbstractSession implements Initializable 
                                 if (students.get(i1).getEmail().get().equals(stud_selected.getEmail().get()))
                                     students.get(i1).setDate("null");
                             }
+
+                            activity.forcePresenceUser(stud_selected.getEmail().get(), "N/A", new ApiRequest.JSONObjectListener() {
+                                @Override
+                                public void onComplete(JSONObject res) {
+                                    Platform.runLater(() -> new JFXSnackbar(root).show(stud_selected.getEmail().get() + " has been set N/A on the intranet", 2000));
+                                }
+
+                                @Override
+                                public void onFailure(String err) {
+                                    Platform.runLater(() -> new JFXSnackbar(root).show("An error occured while setting " + stud_selected.getEmail().get() + " N/A", 2000));
+                                }
+                            });
+
 
                             Platform.runLater(() -> {
                                 TreeItem<Student> root1 = new RecursiveTreeItem<>(students, RecursiveTreeObject::getChildren);
@@ -222,44 +253,92 @@ public class SessionController extends AbstractSession implements Initializable 
         if (epicheck.models.Params.isConnected())
         {
             epicheck.models.Params.disconnect();
-            new JFXSnackbar(root).show("Lecteur déconnecté", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    try {
-                        connect();
-                    } catch (Exception e) {}
-                }
+            new JFXSnackbar(root).show("Lecteur déconnecté", "CONNECTER", 5000, mouseEvent -> {
+                try {
+                    connect();
+                } catch (Exception e) {}
             });
             btn_connect.setText("Connecter le lecteur");
         } else {
             if (!epicheck.models.Params.connect()) {
-                new JFXSnackbar(root).show("Lecteur non trouvé", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        try {
-                            connect();
-                        } catch (Exception e) {}
-                    }
+                new JFXSnackbar(root).show("Lecteur non trouvé", "CONNECTER", 5000, mouseEvent -> {
+                    try {
+                        connect();
+                    } catch (Exception e) {}
                 });
                 btn_connect.setText("Connecter le lecteur");
             }
             else {
-                new JFXSnackbar(root).show("Lecteur connecté", "DÉCONNECTER", 10000, new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        try {
-                            connect();
-                        } catch (Exception e) {}
-                    }
+                new JFXSnackbar(root).show("Lecteur connecté", "DÉCONNECTER", 5000, mouseEvent -> {
+                    try {
+                        connect();
+                    } catch (Exception e) {}
                 });
-                btn_connect.setText("Déonnecter le lecteur");
+                btn_connect.setText("Déconnecter le lecteur");
             }
         }
     }
     
     @FXML
     private void endSession() {
-        // TODO: 10/29/16 end session, check if mails is checked ans send mails or not. close the window afterthat
+
+        if (chkbox_email.isSelected()) {
+            Preferences.get().getEmailList();
+            ArrayList<String> emails = new ArrayList<>();
+            Collections.addAll(emails, Preferences.get().getEmailList().split("\\n"));
+
+            ArrayList<String> abs_students = new ArrayList<>();
+
+            for (int i = 0; i < students.size(); i++) {
+                if (students.get(i).getDate().get().length() == 0)
+                    abs_students.add(students.get(i).getEmail().get());
+            }
+
+            String content_master = "Bonjour,\n\nVoici la liste des étudiants absents à l'activité : " + activity.getActiTitle().get() + ".\n\n";
+
+            for (int i = 0; i < abs_students.size(); i++) {
+                content_master += "- " + abs_students.get(i) + "\n";
+                activity.forcePresenceUser(abs_students.get(i), "absent", new ApiRequest.JSONObjectListener() {
+                    @Override
+                    public void onComplete(JSONObject res) {
+                    }
+
+                    @Override
+                    public void onFailure(String err) {
+                    }
+                });
+            }
+            if (abs_students.size() == 0)
+                content_master += "Aucun étudiant absent.\n";
+            content_master += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
+
+            MailUtils.send(new ApiRequest.StringListener() {
+                @Override
+                public void onComplete(String res) {
+                    String student_content = "Bonjour,\n\nVous n'avez pas validé votre présence à l'activité " + activity.getActiTitle().get() + ".\n\nRapprochez vous de la pédagogie pour justifier cette absence.\n";
+                    student_content += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
+                    for (int i = 0; i < abs_students.size(); i++) {
+                        final int cur_pos = i;
+                        MailUtils.send(new ApiRequest.StringListener() {
+                            @Override
+                            public void onComplete(String res) {}
+
+                            @Override
+                            public void onFailure(String err) {
+                            }
+                        }, "[EPICHECK]Absence activité", student_content, abs_students.get(i));
+                    }
+                }
+
+                @Override
+                public void onFailure(String err) {
+                    Platform.runLater(() -> new JFXSnackbar(root).show("Echec lors de l'envoi du mail d'absence.", 2000));
+                }
+            }, "[EPICHECK]Liste des étudiants absents", content_master, emails);
+        }
+
+        Stage stage = (Stage) chkbox_email.getScene().getWindow();
+        stage.close();
     }
 
 }

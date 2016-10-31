@@ -16,10 +16,10 @@
             <Label fx:id="lbl_email" layoutX="103.0" layoutY="397.0" text="Label" />
             <Label fx:id="lbl_date" layoutX="103.0" layoutY="443.0" text="Label" />
             <JFXTreeTableView fx:id="table" layoutX="500.0" layoutY="20.0" prefHeight="465.0" prefWidth="480.0" />
-            <JFXButton fx:id="btn_connect" layoutX="151.0" layoutY="530.0" mnemonicParsing="false" onAction="#connect" prefHeight="48.0" prefWidth="200.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Connecter le lecteur" textFill="WHITE" />
+            <JFXButton fx:id="btn_connect" layoutX="103.0" layoutY="530.0" mnemonicParsing="false" onAction="#connect" prefHeight="48.0" prefWidth="295.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Connecter le lecteur" textFill="WHITE" />
             <JFXButton fx:id="btn_delete" layoutX="760.0" layoutY="530.0" mnemonicParsing="false" onAction="#deleteEntry" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Supprimer la sélection" textFill="WHITE" />
             <JFXButton fx:id="btn_end_session" layoutX="500.0" layoutY="530.0" mnemonicParsing="false" onAction="#endSession" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Fin de session" textFill="WHITE" />
-            <JFXCheckBox layoutX="490.0" layoutY="500.0" mnemonicParsing="false" text="Send emails" />
+            <JFXCheckBox fx:id="chkbox_email" layoutX="490.0" layoutY="500.0" mnemonicParsing="false" text="Send emails" />
 
          </children></Pane>
    </children>
