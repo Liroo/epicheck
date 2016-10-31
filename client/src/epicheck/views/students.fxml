@@ -127,7 +127,7 @@
                   <Font name="SF UI Text Bold" size="16.0" />
                </font>
             </Label>
-            <JFXTextField layoutX="75.0" layoutY="60.0" maxWidth="208.0" minWidth="198.0" prefHeight="19.0" prefWidth="208.0" promptText="kevin.empociello">
+            <JFXTextField fx:id="searchField" onKeyReleased="#searchFilter" layoutX="75.0" layoutY="60.0" maxWidth="208.0" minWidth="198.0" prefHeight="19.0" prefWidth="208.0" promptText="kevin.empociello">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font></JFXTextField>

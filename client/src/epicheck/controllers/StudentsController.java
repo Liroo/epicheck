@@ -1,9 +1,6 @@
 package epicheck.controllers;
 
-import com.jfoenix.controls.JFXSnackbar;
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.mb3364.http.HttpResponseHandler;
 import epicheck.apimodels.Activity;
@@ -16,6 +13,7 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -48,6 +46,9 @@ public class StudentsController implements Initializable {
 
     @FXML
     private JFXTreeTableView studentTableView;
+
+    @FXML
+    private JFXTextField searchField;
 
     @FXML
     private Label nameLabel;
@@ -83,6 +84,9 @@ public class StudentsController implements Initializable {
     private Label thirdNoteValLabel;
 
     private ObservableList<Student> students;
+    private ObservableList<Student> searchStudents;
+
+    private JSONArray student_json;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -100,11 +104,13 @@ public class StudentsController implements Initializable {
         login.setMinWidth(580);
 
         students = FXCollections.observableArrayList();
+        searchStudents = FXCollections.observableArrayList();
 
         ApiRequest.get().getStudents(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
                 Platform.runLater(() -> {
+                    student_json = res;
                     try {
                         for (int i = 0; i < res.length(); i++) {
                             JSONObject obj = res.getJSONObject(i);
@@ -129,8 +135,10 @@ public class StudentsController implements Initializable {
 
         studentTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             RecursiveTreeItem selectRow = (RecursiveTreeItem) studentTableView.getSelectionModel().getSelectedItem();
-            Student student = (Student) selectRow.getValue();
-            updateStudentInfo(student);
+            if (selectRow != null) {
+                Student student = (Student) selectRow.getValue();
+                updateStudentInfo(student);
+            }
         });
     }
 
@@ -148,9 +156,13 @@ public class StudentsController implements Initializable {
                         yearLabel.setText(obj.getString("studentyear") + "ème année");
                         creditsLabel.setText(obj.getString("credits"));
                         gpaLabel.setText(obj.getJSONArray("gpa").getJSONObject(0).getString("gpa"));
-                        logLabel.setText(obj.getJSONObject("nsstat").getString("active"));
                         profilePicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
-                  } catch (JSONException e) {
+                        if (obj.has("nsstat")) {
+                            logLabel.setText(obj.getJSONObject("nsstat").getString("active"));
+                        } else {
+                            logLabel.setText("0");
+                        }
+                    } catch (JSONException e) {
                         e.printStackTrace();
                   }
                 });
@@ -166,5 +178,25 @@ public class StudentsController implements Initializable {
             public void onFailure(Throwable throwable) {
             }
         });
+    }
+
+    public void searchFilter(Event event) throws JSONException{
+        searchStudents.clear();
+        studentTableView.getSelectionModel().clearSelection();
+
+
+        if (searchField.getText().length() == 0) {
+            final TreeItem<epicheck.apimodels.Student> root = new RecursiveTreeItem<>(students, RecursiveTreeObject::getChildren);
+            Platform.runLater(() -> studentTableView.setRoot(root));
+            return ;
+        }
+        for (int i = 0; i < student_json.length(); i++) {
+            JSONObject obj = student_json.getJSONObject(i);
+            if (obj.getString("email").toLowerCase().contains(searchField.getText().toLowerCase())) {
+                searchStudents.add(new Student(obj.getString("email"), ""));
+            }
+        }
+        final TreeItem<epicheck.apimodels.Student> root = new RecursiveTreeItem<>(searchStudents, RecursiveTreeObject::getChildren);
+        Platform.runLater(() -> studentTableView.setRoot(root));
     }
 }

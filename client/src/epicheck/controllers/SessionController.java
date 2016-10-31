@@ -135,6 +135,7 @@ public class SessionController extends AbstractSession implements Initializable 
 
             @Override
             public void scanError(String error) {
+                System.out.println("error = [" + error + "]");
                 Platform.runLater(() -> new JFXSnackbar(root).show("Please, scan card again", 3000));
             }
         });

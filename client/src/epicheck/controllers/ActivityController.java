@@ -33,6 +33,8 @@ import org.json.JSONObject;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.ResourceBundle;
 
 import static java.lang.System.in;
@@ -59,7 +61,10 @@ public class ActivityController implements Initializable {
     private ObservableList<epicheck.apimodels.Activity> oldSessions;
     private ObservableList<epicheck.apimodels.Activity> searchActivities;
 
+    private boolean oldSessions_cache;
+
     private JSONArray activities_json;
+    private JSONArray old_activities_json;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -82,9 +87,10 @@ public class ActivityController implements Initializable {
         activities = FXCollections.observableArrayList();
         searchActivities = FXCollections.observableArrayList();
         oldSessions = FXCollections.observableArrayList();
+        oldSessions_cache = false;
 
         HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
-        ApiRequest.get().getActivitiesFromIntra("2016-10-18", "2016-10-18", new ApiRequest.JSONArrayListener() {
+        ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
                 activities_json = res;
@@ -92,8 +98,12 @@ public class ActivityController implements Initializable {
                     try {
                         for (int i = 0; i < res.length(); i++) {
                             JSONObject obj = res.getJSONObject(i);
-                            activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
-                                    obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+                            try {
+                                activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
+                                        obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+                            } catch (Exception e) {
+                                System.out.println("e = " + e);
+                            }
                         }
                         final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
                         tableView.getColumns().setAll(name, module, beginDate, endDate);
@@ -147,6 +157,7 @@ public class ActivityController implements Initializable {
 
                     @Override
                     public void onFailure(String err) {
+                        System.out.println("err = " + err);
                         Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                     }
                 });
@@ -168,11 +179,13 @@ public class ActivityController implements Initializable {
 
                             @Override
                             public void onFailure(String err) {
+                                System.out.println("err = " + err);
                                 Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                             }
                         });
                     }
                 } catch (JSONException e) {
+                    System.out.println("e = " + e);
                     Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez rééssayer", 3000));
                 }
             }
@@ -189,7 +202,7 @@ public class ActivityController implements Initializable {
         }
         
         RecursiveTreeItem select = (RecursiveTreeItem) tableView.getSelectionModel().getSelectedItem();
-        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue() ;
+        epicheck.apimodels.Activity activity = (epicheck.apimodels.Activity) select.getValue();
 
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
@@ -208,6 +221,7 @@ public class ActivityController implements Initializable {
 
             @Override
             public void onFailure(String err) {
+                System.out.println("err = " + err);
                 Platform.runLater(() -> new JFXSnackbar(rootPane).show(err, 3000));
             }
         });
@@ -216,25 +230,39 @@ public class ActivityController implements Initializable {
     public void searchFilter() throws JSONException {
         searchActivities.clear();
 
-        if (searchField.getText().length() == 0) {
+        if (searchField.getText().length() == 0 && pastActivity.isSelected() == false) {
             final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
             Platform.runLater(() -> tableView.setRoot(root));
             return ;
         }
-        for (int i = 0; i < activities_json.length(); i++)
+        JSONArray arr;
+        if (pastActivity.isSelected()) {
+            arr = old_activities_json;
+        } else {
+            arr = activities_json;
+        }
+        for (int i = 0; i < arr.length(); i++)
         {
-            JSONObject obj = activities_json.getJSONObject(i);
-            if (obj.getString("acti_title").toLowerCase().contains(searchField.getText().toLowerCase()))
-                searchActivities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
-                        obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+            JSONObject obj;
+            obj = arr.getJSONObject(i);
+            if (pastActivity.isSelected()) {
+                if (obj.getString("actiTitle").toLowerCase().contains(searchField.getText().toLowerCase()))
+                    searchActivities.add(new epicheck.apimodels.Activity(obj.getString("actiTitle"), obj.getString("moduleTitle"), obj.getString("dateFrom"), obj.getString("dateTo"),
+                            obj.getString("scholarYear"), obj.getString("codeModule"), obj.getString("codeInstance"), obj.getString("codeActi"), obj.getString("codeEvent")));
+            } else {
+                if (obj.getString("acti_title").toLowerCase().contains(searchField.getText().toLowerCase()))
+                    searchActivities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
+                            obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+            }
         }
         final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(searchActivities, RecursiveTreeObject::getChildren);
         Platform.runLater(() -> tableView.setRoot(root));
     }
 
     public void changeActivityState() {
-        if (pastActivity.isSelected() == true) {
-            if (oldSessions.size() > 0) {
+        searchField.setText("");
+        if (pastActivity.isSelected()) {
+            if (oldSessions_cache) {
                 final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
                 Platform.runLater(() -> tableView.setRoot(root));
                 return;
@@ -244,6 +272,7 @@ public class ActivityController implements Initializable {
                 public void onComplete(JSONArray res) {
                     Platform.runLater(() -> {
                         try {
+                            old_activities_json = res;
                             for (int i = 0; i < res.length(); i++) {
                                 JSONObject obj = res.getJSONObject(i);
                                 oldSessions.add(new epicheck.apimodels.Activity(obj.getString("actiTitle"), obj.getString("moduleTitle"), obj.getString("dateFrom"), obj.getString("dateTo"),
@@ -251,6 +280,7 @@ public class ActivityController implements Initializable {
                             }
                             final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
                             Platform.runLater(() -> tableView.setRoot(root));
+                            oldSessions_cache = true;
                         } catch (Exception e) {
                             System.out.println(e.toString());
                             Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez recharger le calendrier", 3000));
@@ -270,4 +300,12 @@ public class ActivityController implements Initializable {
         }
     }
 
+    public String getToday() {
+        Date date = new Date(); // your date
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        String today = "" + cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
+
+        return today;
+    }
 }

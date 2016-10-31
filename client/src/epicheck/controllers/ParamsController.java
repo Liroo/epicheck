@@ -94,7 +94,6 @@ public class ParamsController implements Initializable {
                     });
 
                 } catch (Exception e) {
-
                 }
             }
 
