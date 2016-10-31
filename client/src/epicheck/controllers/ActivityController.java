@@ -66,12 +66,18 @@ public class ActivityController implements Initializable {
     private JSONArray activities_json;
     private JSONArray old_activities_json;
 
+    private JFXTreeTableColumn<epicheck.apimodels.Activity, String> name;
+    private JFXTreeTableColumn<epicheck.apimodels.Activity, String> module;
+    private JFXTreeTableColumn<epicheck.apimodels.Activity, String> beginDate;
+    private JFXTreeTableColumn<epicheck.apimodels.Activity, String> endDate;
+
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        JFXTreeTableColumn<epicheck.apimodels.Activity, String> name = new JFXTreeTableColumn<>("Titre");
-        JFXTreeTableColumn<epicheck.apimodels.Activity, String> module = new JFXTreeTableColumn<>("Module");
-        JFXTreeTableColumn<epicheck.apimodels.Activity, String> beginDate = new JFXTreeTableColumn<>("Date début");
-        JFXTreeTableColumn<epicheck.apimodels.Activity, String> endDate = new JFXTreeTableColumn<>("Date fin");
+        name = new JFXTreeTableColumn<>("Titre");
+        module = new JFXTreeTableColumn<>("Module");
+        beginDate = new JFXTreeTableColumn<>("Date début");
+        endDate = new JFXTreeTableColumn<>("Date fin");
 
         name.setMaxWidth(400);
         module.setMaxWidth(330);
@@ -89,7 +95,6 @@ public class ActivityController implements Initializable {
         oldSessions = FXCollections.observableArrayList();
         oldSessions_cache = false;
 
-        HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
@@ -116,7 +121,7 @@ public class ActivityController implements Initializable {
             }
             @Override
             public void onFailure(String err) {
-                System.out.println("err = [" + err + "]");
+                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur de chargement des activités depuis l'intra. Vérifiez le lien d'autologin", 2000));
             }
         });
     }
@@ -223,6 +228,41 @@ public class ActivityController implements Initializable {
             public void onFailure(String err) {
                 System.out.println("err = " + err);
                 Platform.runLater(() -> new JFXSnackbar(rootPane).show(err, 3000));
+            }
+        });
+    }
+
+    @FXML
+    private void refreshList() {
+        activities.clear();
+        ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
+            @Override
+            public void onComplete(JSONArray res) {
+                activities_json = res;
+                Platform.runLater(() -> {
+                    try {
+                        for (int i = 0; i < res.length(); i++) {
+                            JSONObject obj = res.getJSONObject(i);
+                            try {
+                                activities.add(new epicheck.apimodels.Activity(obj.getString("acti_title"), obj.getString("titlemodule"), obj.getString("start"), obj.getString("end"),
+                                        obj.getString("scolaryear"), obj.getString("codemodule"), obj.getString("codeinstance"), obj.getString("codeacti"), obj.getString("codeevent")));
+                            } catch (Exception e) {
+                                System.out.println("e = " + e);
+                            }
+                        }
+                        final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
+                        tableView.getColumns().setAll(name, module, beginDate, endDate);
+                        tableView.setRoot(root);
+                        tableView.setShowRoot(false);
+                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Rafraîchissement terminé", 3000));
+                    } catch (Exception e) {
+                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez recharger le calendrier", 3000));
+                    }
+                });
+            }
+            @Override
+            public void onFailure(String err) {
+                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur de chargement des activités depuis l'intra. Vérifiez le lien d'autologin", 2000));
             }
         });
     }

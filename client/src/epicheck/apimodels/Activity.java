@@ -2,13 +2,16 @@ package epicheck.apimodels;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.mb3364.http.HttpResponseHandler;
+import com.mb3364.http.RequestParams;
 import epicheck.utils.ApiRequest;
+import epicheck.utils.ApiRequest.JSONObjectListener;
 import epicheck.utils.ApiUtils;
 import epicheck.utils.Preferences;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 import java.util.Map;
@@ -93,6 +96,34 @@ public class Activity extends RecursiveTreeObject<Activity> {
                     call.onComplete(new JSONArray(new String(bytes)));
                 } catch (JSONException e) {
                     call.onFailure("Aucun étudiant inscrit à cette activité");
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("connection interrupted");
+            }
+        });
+    }
+
+    public void forcePresenceUser(String email, String status, JSONObjectListener call) {
+        String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/module/" + scholarYear.get() + "/" + codeModule.get() + "/" + codeInstance.get() + "/" + codeActi.get() + "/" + codeEvent.get() + "/updateregistered?format=json";
+        System.out.println(URL);
+        RequestParams params = new RequestParams();
+        params.put("items[0][login]", email);
+        params.put("items[0][present]", status);
+        ApiUtils.get().exec(ApiUtils.RequestType.POST, URL, params, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    call.onComplete(new JSONObject(new String(bytes)));
+                } catch (JSONException e) {
+                    call.onFailure("Erreur durant la validation de présence");
                 }
             }
 
