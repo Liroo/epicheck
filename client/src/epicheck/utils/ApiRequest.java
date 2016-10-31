@@ -2,11 +2,15 @@ package epicheck.utils;
 
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
+import com.sun.deploy.util.ArrayUtil;
+import com.sun.tools.javac.util.ArrayUtils;
+import epicheck.apimodels.Student;
 import epicheck.utils.ApiUtils.ApiVars;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -42,6 +46,42 @@ public class ApiRequest implements ApiVars {
             self = new ApiRequest();
         return (self);
     }
+
+    /**
+     * Intra Student marks
+     */
+
+    public void getStudentMarks(Student student, JSONArrayListener call) {
+        String URL = intraUrl + Preferences.get().getAutoLogin() + "/user/" + student.getEmail().get() + "/notes/?format=json";
+        System.out.println("URL = " + URL);
+        ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    JSONObject obj = new JSONObject(new String(bytes));
+                    JSONArray ret = obj.getJSONArray("modules");
+                    JSONArray newJsonArray = new JSONArray();
+                    for (int j = ret.length()-1; j>=0; j--) {
+                        newJsonArray.put(ret.get(j));
+                    }
+                    call.onComplete(newJsonArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("Connection interrupted");
+            }
+        });
+    }
+
 
     /**
      * Intra Activities
