@@ -14,8 +14,8 @@ import java.util.Properties;
  */
 public class MailUtils {
 
-    private static String username = "jean.barriere@epitech.eu";
-    private static String password = "owbl(s:?";
+    private static String username = "";
+    private static String password = "";
     private static String maillist;
 
     public static void send(ApiRequest.StringListener ret, String subject, String content, ArrayList<String> emails) {
