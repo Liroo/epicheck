@@ -340,9 +340,7 @@ public class ApiRequest implements ApiVars {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {
-                    JSONObject obj = new JSONObject(new String(bytes));
-                    JSONArray ret = obj.getJSONArray("students");
-                    call.onComplete(ret);
+                    call.onComplete(new JSONArray(new String(bytes)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -423,6 +421,31 @@ public class ApiRequest implements ApiVars {
                 try {
                     JSONObject ret = new JSONObject(new String(bytes));
                     call.onComplete(ret);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("Connection interrupted");
+            }
+        });
+    }
+
+
+    public void getStudentByEmail(String email, JSONObjectListener call) {
+        String URL = apiUrl + "students/get/" + email;
+        ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    call.onComplete(new JSONObject(new String(bytes)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

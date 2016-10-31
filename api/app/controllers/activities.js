@@ -136,7 +136,6 @@ router.post('/add', function(req, res, next) {
                   res.status(500).json(err);
                 } else {
                   async.forEach(activity.students, function (student, callback) {
-                    console.log(student);
                     student.activities.push(activity);
                     student.save();
                     callback();

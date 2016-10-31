@@ -27,7 +27,6 @@ router.post('/', function(req, res, next) {
     var now = new Date();
     now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 2, now.getUTCMinutes(), now.getUTCSeconds())
     //now.setTime(now.getTime() - now.getTimezoneOffset()*60*1000 );
-    console.log(now);
     var presence = new Presence({
       student: '',
       date: now,
@@ -51,7 +50,6 @@ router.post('/', function(req, res, next) {
             });
           } else {
             var acti = student.activities.find(a => { return (a.toString() === activity._id.toString()); });
-            console.log(acti);
             if (!acti) {
               res.status(404).json({
                 message: "student not registered"
