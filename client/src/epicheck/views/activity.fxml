@@ -14,8 +14,8 @@
    <children>
       <Pane prefHeight="690.0" prefWidth="1200.0">
          <children>
-            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="79.0" prefHeight="525.0" prefWidth="1167.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 14;" />
-            <JFXTextField fx:id="searchField" layoutX="82.0" layoutY="24.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
+            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="80.0" prefHeight="530.0" prefWidth="1180.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 14;" />
+            <JFXTextField fx:id="searchField" layoutX="80.0" layoutY="24.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font></JFXTextField>
@@ -24,7 +24,7 @@
                   <Font name="SF UI Text Light" size="15.0" />
                </font>
             </Label>
-            <JFXButton layoutX="987.0" layoutY="628.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Lancer session" textFill="WHITE">
+            <JFXButton layoutX="1000.0" layoutY="626.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Lancer session" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Bold" size="40.0" />
                </font></JFXButton>

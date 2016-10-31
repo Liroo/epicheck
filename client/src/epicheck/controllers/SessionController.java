@@ -11,6 +11,7 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -18,6 +19,7 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.*;
 import javafx.scene.shape.Circle;
@@ -74,10 +76,9 @@ public class SessionController extends AbstractSession implements Initializable 
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
-                lbl_lecteur.setText("Lecteur connecté");
-                btn_connect.setText("Déconnecter le lecteur");
+                new JFXSnackbar(root).show("Lecteur connecté", 2000);
             } else {
-                lbl_lecteur.setText("Lecteur déconnecté");
+                new JFXSnackbar(root).show("Lecteur déconnecté", 2000);
                 btn_connect.setText("Connecter le lecteur");
             }
         });
@@ -91,7 +92,7 @@ public class SessionController extends AbstractSession implements Initializable 
                     Platform.runLater(() -> {
                         lbl_email.setText(studentEmail);
                         Date now = new Date();
-                        DateFormat extern = new SimpleDateFormat("HH:mm:ss");
+                        DateFormat extern = new SimpleDateFormat("HH:mm");
                         lbl_date.setText("Validation : " + extern.format(now));
                         img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
                         img_stud.setVisible(true);
@@ -141,10 +142,13 @@ public class SessionController extends AbstractSession implements Initializable 
 
     public void deleteEntry() throws JSONException {
         JSONArray studs = activity_json.getJSONArray("students");
+        if (table.getSelectionModel().isEmpty())
+            return ;
+        RecursiveTreeItem select = (RecursiveTreeItem) table.getSelectionModel().getSelectedItem();
+        Student stud_selected = (Student) select.getValue();
+
         for (int i = 0; i < studs.length(); i++) {
             JSONObject student = studs.getJSONObject(i);
-            RecursiveTreeItem select = (RecursiveTreeItem) table.getSelectionModel().getSelectedItem();
-            Student stud_selected = (Student) select.getValue();
             if (student.getString("email").equals(stud_selected.getEmail().get()))
             {
                 ApiRequest.get().deleteCheck(student.getString("_id"), activity_json.getString("_id"), new ApiRequest.JSONObjectListener() {
@@ -217,18 +221,44 @@ public class SessionController extends AbstractSession implements Initializable 
         if (epicheck.models.Params.isConnected())
         {
             epicheck.models.Params.disconnect();
-            lbl_lecteur.setText("Lecteur déconnecté");
+            new JFXSnackbar(root).show("Lecteur déconnecté", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        connect();
+                    } catch (Exception e) {}
+                }
+            });
             btn_connect.setText("Connecter le lecteur");
         } else {
             if (!epicheck.models.Params.connect()) {
-                lbl_lecteur.setText("Lecteur déconnecté");
+                new JFXSnackbar(root).show("Lecteur non trouvé", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        try {
+                            connect();
+                        } catch (Exception e) {}
+                    }
+                });
                 btn_connect.setText("Connecter le lecteur");
             }
             else {
-                lbl_lecteur.setText("Lecteur connecté");
+                new JFXSnackbar(root).show("Lecteur connecté", "DÉCONNECTER", 10000, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        try {
+                            connect();
+                        } catch (Exception e) {}
+                    }
+                });
                 btn_connect.setText("Déonnecter le lecteur");
             }
         }
+    }
+    
+    @FXML
+    private void endSession() {
+        // TODO: 10/29/16 end session, check if mails is checked ans send mails or not. close the window afterthat
     }
 
 }

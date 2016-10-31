@@ -213,7 +213,7 @@ public class ActivityController implements Initializable {
         });
     }
 
-    public void searchFilter(Event event) throws JSONException {
+    public void searchFilter() throws JSONException {
         searchActivities.clear();
 
         if (searchField.getText().length() == 0) {
