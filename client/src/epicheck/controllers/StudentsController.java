@@ -174,10 +174,10 @@ public class StudentsController implements Initializable {
                         for (int i = 0; i < 3; i++) {
                             JSONObject tmp = res.getJSONObject(i);
                             markLabel.get(i).setText(tmp.getString("title"));
-                            markValLabel.get(i).setText(tmp.getString("final_note"));
+                            markValLabel.get(i).setText("" + tmp.getInt("final_note"));
                         }
-                        System.out.println("res.length() = " + res.length());
                     } catch (Exception e) {
+                        System.out.println("e = " + e);
                         System.out.println("Failed parsing JSON");
                     }
                 });

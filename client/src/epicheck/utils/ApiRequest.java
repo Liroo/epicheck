@@ -59,7 +59,7 @@ public class ApiRequest implements ApiVars {
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {
                     JSONObject obj = new JSONObject(new String(bytes));
-                    JSONArray ret = obj.getJSONArray("modules");
+                    JSONArray ret = obj.getJSONArray("notes");
                     JSONArray newJsonArray = new JSONArray();
                     for (int j = ret.length()-1; j>=0; j--) {
                         newJsonArray.put(ret.get(j));
