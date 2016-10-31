@@ -2,15 +2,12 @@ package epicheck.utils;
 
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
-import com.sun.deploy.util.ArrayUtil;
-import com.sun.tools.javac.util.ArrayUtils;
 import epicheck.apimodels.Student;
 import epicheck.utils.ApiUtils.ApiVars;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
