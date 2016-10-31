@@ -11,17 +11,23 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.*;
+import javafx.scene.shape.Circle;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -32,7 +38,7 @@ import java.util.ResourceBundle;
 /**
  * Created by jean on 18/10/16.
  */
-public class SessionController implements Initializable {
+public class SessionController extends AbstractSession implements Initializable {
     private Activity activity;
     private JSONObject activity_json;
 
@@ -62,14 +68,17 @@ public class SessionController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         Platform.runLater(() -> {
-            img_stud.setVisible(false);
+            final Circle clip = new Circle(147.5D, 175, 147.5D);
+            img_stud.setVisible(true);
+            img_stud.setClip(clip);
+            img_stud.setImage(new Image(getClass().getResource("/resources/images/default_student.jpg").toExternalForm()));
+            img_stud.setSmooth(true);
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
-                lbl_lecteur.setText("Lecteur connecté");
-                btn_connect.setText("Déconnecter le lecteur");
+                new JFXSnackbar(root).show("Lecteur connecté", 2000);
             } else {
-                lbl_lecteur.setText("Lecteur déconnecté");
+                new JFXSnackbar(root).show("Lecteur déconnecté", 2000);
                 btn_connect.setText("Connecter le lecteur");
             }
         });
@@ -83,7 +92,7 @@ public class SessionController implements Initializable {
                     Platform.runLater(() -> {
                         lbl_email.setText(studentEmail);
                         Date now = new Date();
-                        DateFormat extern = new SimpleDateFormat("HH:mm:ss");
+                        DateFormat extern = new SimpleDateFormat("HH:mm");
                         lbl_date.setText("Validation : " + extern.format(now));
                         img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
                         img_stud.setVisible(true);
@@ -126,6 +135,7 @@ public class SessionController implements Initializable {
 
             @Override
             public void scanError(String error) {
+                System.out.println("error = [" + error + "]");
                 Platform.runLater(() -> new JFXSnackbar(root).show("Please, scan card again", 3000));
             }
         });
@@ -133,10 +143,13 @@ public class SessionController implements Initializable {
 
     public void deleteEntry() throws JSONException {
         JSONArray studs = activity_json.getJSONArray("students");
+        if (table.getSelectionModel().isEmpty())
+            return ;
+        RecursiveTreeItem select = (RecursiveTreeItem) table.getSelectionModel().getSelectedItem();
+        Student stud_selected = (Student) select.getValue();
+
         for (int i = 0; i < studs.length(); i++) {
             JSONObject student = studs.getJSONObject(i);
-            RecursiveTreeItem select = (RecursiveTreeItem) table.getSelectionModel().getSelectedItem();
-            Student stud_selected = (Student) select.getValue();
             if (student.getString("email").equals(stud_selected.getEmail().get()))
             {
                 ApiRequest.get().deleteCheck(student.getString("_id"), activity_json.getString("_id"), new ApiRequest.JSONObjectListener() {
@@ -179,11 +192,10 @@ public class SessionController implements Initializable {
         email.setEditable(true);
         check.setEditable(true);
 
-        email.setMinWidth(240);
-        check.setMinWidth(220);
+        email.setMaxWidth(260);
+        check.setMinWidth(200);
 
         students = FXCollections.observableArrayList();
-
 
         try {
             JSONArray studs = activity_json.getJSONArray("students");
@@ -210,18 +222,44 @@ public class SessionController implements Initializable {
         if (epicheck.models.Params.isConnected())
         {
             epicheck.models.Params.disconnect();
-            lbl_lecteur.setText("Lecteur déconnecté");
+            new JFXSnackbar(root).show("Lecteur déconnecté", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    try {
+                        connect();
+                    } catch (Exception e) {}
+                }
+            });
             btn_connect.setText("Connecter le lecteur");
         } else {
             if (!epicheck.models.Params.connect()) {
-                lbl_lecteur.setText("Lecteur déconnecté");
+                new JFXSnackbar(root).show("Lecteur non trouvé", "CONNECTER", 10000, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        try {
+                            connect();
+                        } catch (Exception e) {}
+                    }
+                });
                 btn_connect.setText("Connecter le lecteur");
             }
             else {
-                lbl_lecteur.setText("Lecteur connecté");
+                new JFXSnackbar(root).show("Lecteur connecté", "DÉCONNECTER", 10000, new EventHandler<MouseEvent>() {
+                    @Override
+                    public void handle(MouseEvent mouseEvent) {
+                        try {
+                            connect();
+                        } catch (Exception e) {}
+                    }
+                });
                 btn_connect.setText("Déonnecter le lecteur");
             }
         }
+    }
+    
+    @FXML
+    private void endSession() {
+        // TODO: 10/29/16 end session, check if mails is checked ans send mails or not. close the window afterthat
     }
 
 }

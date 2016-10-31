@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXDatePicker?>
 <?import com.jfoenix.controls.JFXTextField?>
 <?import com.jfoenix.controls.JFXToggleButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
@@ -9,29 +10,28 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.102-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="690.0" prefWidth="1200.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="epicheck.controllers.ActivityController">
    <children>
       <Pane prefHeight="690.0" prefWidth="1200.0">
          <children>
-            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="79.0" prefHeight="525.0" prefWidth="1167.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 14;" />
-            <JFXTextField fx:id="searchField" layoutX="903.0" layoutY="24.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
+            <JFXTreeTableView fx:id="tableView" layoutX="10.0" layoutY="80.0" prefHeight="530.0" prefWidth="1180.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 14;" />
+            <JFXTextField fx:id="searchField" layoutX="80.0" layoutY="24.0" maxWidth="272.0" minWidth="224.0" onKeyReleased="#searchFilter" prefHeight="35.0" prefWidth="272.0" promptText="B5-Maths">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font></JFXTextField>
-            <Label layoutX="843.0" layoutY="29.0" text="Filtrer :">
+            <Label layoutX="22.0" layoutY="29.0" text="Filtrer :">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font>
             </Label>
-            <JFXButton layoutX="987.0" layoutY="628.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Lancer session" textFill="WHITE">
+            <JFXButton layoutX="1000.0" layoutY="626.0" mnemonicParsing="false" onAction="#launchActivityScene" prefHeight="48.0" prefWidth="190.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Lancer session" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Bold" size="40.0" />
                </font></JFXButton>
-            <JFXToggleButton layoutX="9.0" layoutY="9.0" mnemonicParsing="false" text="Activités passées">
+            <JFXToggleButton fx:id="pastActivity" layoutX="980.0" layoutY="12.0" mnemonicParsing="false" onAction="#changeActivityState" text="Activités passées" toggleColor="#00bcd4" toggleLineColor="#00bed4a2">
                <font>
-                  <Font name="SF UI Text Semibold" size="15.0" />
-               </font>
-            </JFXToggleButton>
+                  <Font name="SF UI Text Light" size="15.0" />
+               </font></JFXToggleButton>
          </children>
       </Pane>
    </children>

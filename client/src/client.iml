@@ -135,5 +135,6 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="library" name="javax.mail:mail:1.4" level="project" />
   </component>
 </module>

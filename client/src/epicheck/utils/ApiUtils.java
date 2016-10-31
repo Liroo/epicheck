@@ -8,6 +8,10 @@ import com.mb3364.http.RequestParams;
  * Created by jean on 16/10/16.
  */
 public class ApiUtils {
+    public interface ApiVars {
+        String apiUrl = "http://10.10.253.0:3000/"; // http://10.10.253.62:3000
+        String intraUrl = "https://intra.epitech.eu/";
+    }
     public enum RequestType {
         GET,
         POST,

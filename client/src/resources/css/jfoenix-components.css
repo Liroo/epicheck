@@ -94,9 +94,6 @@
 
 
 
-.jfx-check-box{
-    -fx-font-weight: BOLD;
-}
 
 .custom-jfx-check-box{
     -fx-checked-color: RED;
@@ -207,7 +204,7 @@
 
 
  .jfx-toggle-button{
-  		-fx-toggle-color: RED;
+  		-fx-toggle-color: #00BCD4;
  }
 
 .jfx-tool-bar{

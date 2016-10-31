@@ -2,10 +2,15 @@ package epicheck.utils;
 
 import com.mb3364.http.HttpResponseHandler;
 import com.mb3364.http.RequestParams;
+import com.sun.deploy.util.ArrayUtil;
+import com.sun.tools.javac.util.ArrayUtils;
+import epicheck.apimodels.Student;
+import epicheck.utils.ApiUtils.ApiVars;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -16,10 +21,8 @@ import static epicheck.utils.ApiUtils.RequestType.POST;
 /**
  * Created by jean on 16/10/16.
  */
-public class ApiRequest {
+public class ApiRequest implements ApiVars {
     private static ApiRequest self = null;
-
-    private static String apiURL = "http://10.10.253.62:3000/";
 
     public interface JSONArrayListener {
         void onComplete(JSONArray res);
@@ -45,18 +48,62 @@ public class ApiRequest {
     }
 
     /**
+     * Intra Student marks
+     */
+
+    public void getStudentMarks(Student student, JSONArrayListener call) {
+        String URL = intraUrl + Preferences.get().getAutoLogin() + "/user/" + student.getEmail().get() + "/notes/?format=json";
+        System.out.println("URL = " + URL);
+        ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    JSONObject obj = new JSONObject(new String(bytes));
+                    JSONArray ret = obj.getJSONArray("notes");
+                    JSONArray newJsonArray = new JSONArray();
+                    for (int j = ret.length()-1; j>=0; j--) {
+                        newJsonArray.put(ret.get(j));
+                    }
+                    call.onComplete(newJsonArray);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("Connection interrupted");
+            }
+        });
+    }
+
+
+    /**
      * Intra Activities
      */
 
     public void getActivitiesFromIntra(String from, String to, JSONArrayListener call) {
         // format de from et to : yyyy-mm-dd
-        String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
+        String URL = intraUrl + Preferences.get().getAutoLogin() + "/planning/load?format=json&start=" + from + "&end=" + to;
+        System.out.println("URL = " + URL);
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {
                     JSONArray ret = new JSONArray(new String(bytes));
-                    call.onComplete(ret);
+                    JSONArray sel = new JSONArray();
+                    for (int j = 0; j < ret.length(); j++) {
+                        JSONObject obj = ret.getJSONObject(j);
+                        if (obj.has("acti_title")) {
+                            sel.put(obj);
+                        }
+                    }
+                    call.onComplete(sel);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -79,7 +126,7 @@ public class ApiRequest {
      */
 
     public void getActivities(JSONArrayListener call) {
-        String URL = apiURL + "activities";
+        String URL = apiUrl + "activities";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -106,7 +153,7 @@ public class ApiRequest {
 
     public void addActivity(String actiTitle, String dateFrom, String dateTo, String moduleTitle, String scholarYear, String codeModule, String codeInstance,
                             String codeActi, String codeEvent, JSONArray students, JSONObjectListener call) {
-        String URL = apiURL + "activities/add";
+        String URL = apiUrl + "activities/add";
         RequestParams params = new RequestParams();
         params.put("actiTitle", actiTitle);
         params.put("dateFrom", dateFrom);
@@ -148,7 +195,7 @@ public class ApiRequest {
     }
 
     public void getActivity(String codeActi, String codeEvent, JSONObjectListener call) {
-        String URL = apiURL + "activities/get";
+        String URL = apiUrl + "activities/get";
         RequestParams params = new RequestParams();
         params.put("codeActi", codeActi);
         params.put("codeEvent", codeEvent);
@@ -176,7 +223,7 @@ public class ApiRequest {
     }
 
     public void deleteActivity(String id, JSONObjectListener call) {
-        String URL = apiURL + "activities/" + id;
+        String URL = apiUrl + "activities/" + id;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -205,7 +252,7 @@ public class ApiRequest {
      */
 
     public void getChecks(JSONArrayListener call) {
-        String URL = apiURL + "check";
+        String URL = apiUrl + "check";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -231,7 +278,7 @@ public class ApiRequest {
     }
 
     public void addCheck(String activityId, String email, JSONObjectListener call) {
-        String URL = apiURL + "check";
+        String URL = apiUrl + "check";
         RequestParams params = new RequestParams();
         params.put("id", activityId);
         params.put("email", email);
@@ -259,7 +306,7 @@ public class ApiRequest {
     }
 
     public void deleteCheck(String studentId, String activityId, JSONObjectListener call) {
-        String URL = apiURL + "check/" + studentId + "/" + activityId;
+        String URL = apiUrl + "check/" + studentId + "/" + activityId;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -288,14 +335,12 @@ public class ApiRequest {
      */
 
     public void getStudents(JSONArrayListener call) {
-        String URL = apiURL + "students";
+        String URL = apiUrl + "students";
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
                 try {
-                    JSONObject obj = new JSONObject(new String(bytes));
-                    JSONArray ret = obj.getJSONArray("students");
-                    call.onComplete(ret);
+                    call.onComplete(new JSONArray(new String(bytes)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -314,7 +359,7 @@ public class ApiRequest {
     }
 
     public void addStudent(String email, JSONArray activities, JSONObjectListener call) {
-        String URL = apiURL + "students/add";
+        String URL = apiUrl + "students/add";
         RequestParams params = new RequestParams();
         params.put("activities", String.valueOf(activities));
         params.put("email", email);
@@ -342,7 +387,7 @@ public class ApiRequest {
     }
 
     public void deleteStudent(String email, JSONObjectListener call) {
-        String URL = apiURL + "students/" + email;
+        String URL = apiUrl + "students/" + email;
         ApiUtils.get().exec(DELETE, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -367,7 +412,7 @@ public class ApiRequest {
     }
 
     public void getStudent(String tag, JSONObjectListener call) {
-        String URL = apiURL + "students/get";
+        String URL = apiUrl + "students/get";
         RequestParams params = new RequestParams();
         params.put("id", tag);
         ApiUtils.get().exec(POST, URL, params, new HttpResponseHandler() {
@@ -376,6 +421,31 @@ public class ApiRequest {
                 try {
                     JSONObject ret = new JSONObject(new String(bytes));
                     call.onComplete(ret);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onFailure(int i, Map<String, List<String>> map, byte[] bytes) {
+                call.onFailure(new String(bytes));
+            }
+
+            @Override
+            public void onFailure(Throwable throwable) {
+                call.onFailure("Connection interrupted");
+            }
+        });
+    }
+
+
+    public void getStudentByEmail(String email, JSONObjectListener call) {
+        String URL = apiUrl + "students/get/" + email;
+        ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
+            @Override
+            public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
+                try {
+                    call.onComplete(new JSONObject(new String(bytes)));
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }

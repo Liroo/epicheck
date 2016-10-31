@@ -1,8 +1,11 @@
 package epicheck.controllers;
 
 import com.jfoenix.controls.JFXButton;
+import com.jfoenix.controls.JFXSnackbar;
+import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
 import epicheck.utils.ApiRequest;
+import epicheck.utils.MailUtils;
 import epicheck.utils.Preferences;
 import epicheck.utils.nfc.TagTask;
 import javafx.application.Platform;
@@ -12,9 +15,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import org.json.JSONObject;
 
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.ResourceBundle;
 
 /**
@@ -23,28 +29,37 @@ import java.util.ResourceBundle;
 public class ParamsController implements Initializable {
 
     @FXML
-    private static JFXTextField autolinkField;
+    private AnchorPane rootPane;
 
     @FXML
-    private static JFXButton connectBtn;
+    private JFXTextField autolinkField;
+
+    @FXML
+    private JFXButton connectBtn;
 
     @FXML
     private JFXButton applyBtn;
 
     @FXML
-    private static Label noUserLabel;
+    private Label noUserLabel;
 
     @FXML
-    private static Label loginLabel;
+    private Label loginLabel;
 
     @FXML
-    private static Label loginTitleLabel;
+    private Label loginTitleLabel;
 
     @FXML
-    private static ImageView userPicture;
+    private JFXTextArea txtarea_email_list;
+
+    @FXML
+    private JFXButton btn_test_mail;
+
+    @FXML
+    private ImageView userPicture;
 
 
-    public static void refresh() {
+    public void refresh() {
         Platform.runLater(() -> {
             if (epicheck.models.Params.isConnected())
             {
@@ -54,6 +69,7 @@ public class ParamsController implements Initializable {
             }
 
             autolinkField.setText(Preferences.get().getAutoLogin());
+            txtarea_email_list.setText(Preferences.get().getEmailList());
             userPicture.setVisible(false);
             loginLabel.setVisible(false);
             loginTitleLabel.setVisible(false);
@@ -78,7 +94,6 @@ public class ParamsController implements Initializable {
                     });
 
                 } catch (Exception e) {
-
                 }
             }
 
@@ -92,6 +107,7 @@ public class ParamsController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         autolinkField.setText(Preferences.get().getAutoLogin());
+        txtarea_email_list.setText(Preferences.get().getEmailList());
         userPicture.setVisible(false);
         loginLabel.setVisible(false);
         loginTitleLabel.setVisible(false);
@@ -142,8 +158,42 @@ public class ParamsController implements Initializable {
     }
 
     @FXML
-    private void applyParams() {
-        Preferences.get().setAutoLogin(autolinkField.getText().toString());
+    private void testEmail() {
+        if (txtarea_email_list.isDisabled()) {
+            System.out.println("txtarea disabled");
+            return;
+        }
+        Platform.runLater(() -> {
+            btn_test_mail.setText("Sending mail to list...");
+            txtarea_email_list.setDisable(true);
+        });
+        ArrayList<String> emails = new ArrayList<>();
+        Collections.addAll(emails, txtarea_email_list.getText().split("\\n"));
+        Platform.runLater(() -> MailUtils.send(new ApiRequest.StringListener() {
+            @Override
+            public void onComplete(String res) {
+                Platform.runLater(() -> {
+                    new JFXSnackbar(rootPane).show("Email envoyé", 1500);
+                    btn_test_mail.setText("Envoyer un e-mail de test");
+                    txtarea_email_list.setDisable(false);
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Platform.runLater(() -> {
+                    new JFXSnackbar(rootPane).show("Une erreur s'est produite", 1500);
+                    btn_test_mail.setText("Envoyer un e-mail de test");
+                    txtarea_email_list.setDisable(false);
+                });
+            }
+        }, "Epicheck: email de test", "Ceci est un e-mail automatique de test.\nMerci de ne pas répondre.", emails));
     }
 
+    @FXML
+    private void applyParams() {
+        Preferences.get().setAutoLogin(autolinkField.getText().toString());
+        Preferences.get().setEmailList(txtarea_email_list.getText().toString());
+        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Parameters saved", 1500));
+    }
 }

@@ -17,47 +17,8 @@ module.exports = function(app) {
 };
 
 router.get('/', function(req, res, next) {
-    Student.find().populate('activities').exec(function(err, students) {
-        var result = [];
-        async.forEach(students, function(student, callback) {
-            var activities = [];
-            async.forEach(student.activities, function(activity, callback2) {
-                var acti = {
-                  actiTitle: activity.actiTitle,
-                  dateFrom: activity.dateFrom,
-                  dateTo: activity.dateTo,
-                  moduleTitle: activity.moduleTitle,
-                  scholarYear: activity.scholarYear,
-                  codeModule: activity.codeModule,
-                  codeInstance: activity.codeInstance,
-                  codeActi: activity.codeActi,
-                  codeEvent: activity.codeEvent,
-                  presence: { date: null, valid: false }
-                }
-                Presence.findOne({
-                  student: student,
-                  activity: activity
-                }).exec(function (err, presence) {
-                  if (presence) {
-                    acti.presence.valid = true;
-                    acti.presence.date = presence.date;
-                  }
-                  activities.push(acti);
-                  callback2();
-                });
-            }, function(err) {
-              if (!err)
-                result.push({
-                    email: student.email,
-                    activities: activities
-                });
-                callback();
-            });
-        }, function(err) {
-            res.status(200).json({
-                students: result
-            });
-        });
+    Student.find().exec(function(err, students) {
+      res.status(200).json(students);
     });
 });
 
@@ -143,6 +104,50 @@ router.delete('/:email', function(req, res, next) {
             });
         }
     });
+});
+
+router.get('/get/:email', function (req, res, next){
+  Student.findOne({
+    email: req.params["email"]
+  }).populate('activities').exec(function(err, student) {
+    if (!student) {
+      res.status(404).json({message: "user not found"});
+    } else {
+      var activities = [];
+      async.forEach(student.activities, function(activity, callback) {
+          var acti = {
+            actiTitle: activity.actiTitle,
+            dateFrom: activity.dateFrom,
+            dateTo: activity.dateTo,
+            moduleTitle: activity.moduleTitle,
+            scholarYear: activity.scholarYear,
+            codeModule: activity.codeModule,
+            codeInstance: activity.codeInstance,
+            codeActi: activity.codeActi,
+            codeEvent: activity.codeEvent,
+            presence: { date: null, valid: false }
+          }
+          Presence.findOne({
+            student: student,
+            activity: activity
+          }).exec(function (err, presence) {
+            if (presence) {
+              acti.presence.valid = true;
+              acti.presence.date = presence.date;
+            }
+            activities.push(acti);
+            callback();
+          });
+      }, function(err) {
+        if (!err)
+          res.status(200).json({
+              _id: student._id,
+              email: student.email,
+              activities: activities
+          });
+      });
+    }
+  });
 });
 
 router.post('/get', function(req, res, next) {
