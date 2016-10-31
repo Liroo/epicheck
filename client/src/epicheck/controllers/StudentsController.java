@@ -3,6 +3,7 @@ package epicheck.controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.mb3364.http.HttpResponseHandler;
+import epicheck.Main;
 import epicheck.apimodels.Activity;
 import epicheck.apimodels.Student;
 import epicheck.utils.ApiRequest;
@@ -15,18 +16,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import javax.print.DocFlavor;
+import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -88,8 +97,21 @@ public class StudentsController implements Initializable {
 
     private JSONArray student_json;
 
+    private ArrayList<Label> markLabel;
+    private ArrayList<Label> markValLabel;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        markLabel = new ArrayList();
+        markValLabel = new ArrayList();
+
+        markLabel.add(firstNoteLabel);
+        markLabel.add(secondNoteLabel);
+        markLabel.add(thirdNoteLabel);
+        markValLabel.add(firstNoteValLabel);
+        markValLabel.add(secondNoteValLabel);
+        markValLabel.add(thirdNoteValLabel);
+
         Platform.runLater(() -> {
             final Circle clip = new Circle(55.0D, 55.0D, 55);
             profilePicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/kevin.empociello.jpg"));
@@ -142,6 +164,32 @@ public class StudentsController implements Initializable {
         });
     }
 
+    public void updateLastStudentMarks(Student student) {
+        ApiRequest.get().getStudentMarks(student, new ApiRequest.JSONArrayListener() {
+
+            @Override
+            public void onComplete(JSONArray res) {
+                Platform.runLater(() -> {
+                    try {
+                        for (int i = 0; i < 3; i++) {
+                            JSONObject tmp = res.getJSONObject(i);
+                            markLabel.get(i).setText(tmp.getString("title"));
+                            markValLabel.get(i).setText(tmp.getString("final_note"));
+                        }
+                        System.out.println("res.length() = " + res.length());
+                    } catch (Exception e) {
+                        System.out.println("Failed parsing JSON");
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+                System.out.println("err = " + err);
+            }
+        });
+    }
+
     public void updateStudentInfo(Student student) {
         String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/user/" + student.getEmail().get() + "?format=json";
         System.out.println("URL = " + URL);
@@ -162,6 +210,7 @@ public class StudentsController implements Initializable {
                         } else {
                             logLabel.setText("0");
                         }
+                        updateLastStudentMarks(student);
                     } catch (JSONException e) {
                         e.printStackTrace();
                   }
@@ -178,6 +227,31 @@ public class StudentsController implements Initializable {
             public void onFailure(Throwable throwable) {
             }
         });
+    }
+
+    private void launchWindow(String scene_title, Parent root)
+    {
+        Scene scene = new Scene(root);
+        scene.getStylesheets().add(ActivityController.class.getResource("/resources/css/jfoenix-components.css").toExternalForm());
+
+        Stage stage = new Stage();
+        stage.setTitle(scene_title);
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.initModality(Modality.WINDOW_MODAL);
+        stage.initOwner(Main.primaryStage);
+        stage.show();
+        stage.setOnCloseRequest(we -> {
+            Main.mainController.paramsController.refresh();
+        });
+    }
+
+    @FXML
+    public void studentActivities() throws IOException {
+        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("../views/student_activities.fxml"));
+        Parent root = loader.load();
+        launchWindow("Activités de l'étudiant", root);
+        //newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);
     }
 
     public void searchFilter(Event event) throws JSONException{
