@@ -4,6 +4,7 @@ import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXSnackbar;
 import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXTextField;
+import epicheck.Main;
 import epicheck.utils.ApiRequest;
 import epicheck.utils.MailUtils;
 import epicheck.utils.Preferences;
@@ -195,5 +196,6 @@ public class ParamsController implements Initializable {
         Preferences.get().setAutoLogin(autolinkField.getText().toString());
         Preferences.get().setEmailList(txtarea_email_list.getText().toString());
         Platform.runLater(() -> new JFXSnackbar(rootPane).show("Parameters saved", 1500));
+        new Thread(() -> Main.mainController.activityController.refreshList()).start();
     }
 }

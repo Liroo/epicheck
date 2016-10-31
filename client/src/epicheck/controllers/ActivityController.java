@@ -232,8 +232,7 @@ public class ActivityController implements Initializable {
         });
     }
 
-    @FXML
-    private void refreshList() {
+    public void refreshList() {
         activities.clear();
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override

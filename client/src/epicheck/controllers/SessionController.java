@@ -296,13 +296,22 @@ public class SessionController extends AbstractSession implements Initializable 
 
             String content_master = "Bonjour,\n\nVoici la liste des étudiants absents à l'activité : " + activity.getActiTitle().get() + ".\n\n";
 
-            for (int i = 0; i < abs_students.size(); i++)
+            for (int i = 0; i < abs_students.size(); i++) {
                 content_master += "- " + abs_students.get(i) + "\n";
+                activity.forcePresenceUser(abs_students.get(i), "absent", new ApiRequest.JSONObjectListener() {
+                    @Override
+                    public void onComplete(JSONObject res) {
+                    }
+
+                    @Override
+                    public void onFailure(String err) {
+                    }
+                });
+            }
             if (abs_students.size() == 0)
                 content_master += "Aucun étudiant absent.\n";
             content_master += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
 
-            // TODO: 10/29/16 end session, check if mails is checked ans send mails or not. close the window afterthat
             MailUtils.send(new ApiRequest.StringListener() {
                 @Override
                 public void onComplete(String res) {
