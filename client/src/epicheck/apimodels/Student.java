@@ -15,9 +15,12 @@ import java.util.TimeZone;
 /**
  * Created by jean on 18/10/16.
  */
-public class Student extends RecursiveTreeObject<Student> {
+public class Student extends RecursiveTreeObject<Student> implements Cloneable {
     private StringProperty email;
     private StringProperty date;
+    private StringProperty title;
+    private StringProperty pictureUrl;
+    private StringProperty studentYear;
 
     public Student(String email, String date) {
         this.email = new SimpleStringProperty(email);
@@ -37,6 +40,30 @@ public class Student extends RecursiveTreeObject<Student> {
         }
     }
 
+    public void setTitle(String title) {
+        this.title = new SimpleStringProperty(title);
+    }
+
+    public void setPictureUrl(String title) {
+        this.pictureUrl = new SimpleStringProperty(title);
+    }
+
+    public void setStudentYear(String year) {
+        this.studentYear = new SimpleStringProperty(year);
+    }
+
+    public StringProperty getTitle() {
+        return this.title;
+    }
+
+    public StringProperty getStudentYear() {
+        return this.studentYear;
+    }
+
+    public StringProperty getPictureUrl() {
+        return this.pictureUrl;
+    }
+
     public void setDate() {
         Calendar now = Calendar.getInstance();
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
@@ -50,5 +77,9 @@ public class Student extends RecursiveTreeObject<Student> {
 
     public StringProperty getEmail() {
         return email;
+    }
+
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
     }
 }

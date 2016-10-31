@@ -3,6 +3,7 @@ package epicheck.controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.mb3364.http.HttpResponseHandler;
+import com.sun.xml.internal.ws.developer.SerializationFeature;
 import epicheck.Main;
 import epicheck.apimodels.Activity;
 import epicheck.apimodels.Student;
@@ -24,6 +25,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -46,6 +48,9 @@ import static epicheck.utils.ApiUtils.RequestType.GET;
  * Created by Kevin on 17/10/2016.
  */
 public class StudentsController implements Initializable {
+
+    @FXML
+    private AnchorPane rootPane;
 
     @FXML
     private Circle circleClip;
@@ -200,6 +205,9 @@ public class StudentsController implements Initializable {
                     try {
                         JSONObject obj = new JSONObject(new String(bytes));
                         String studentEmail = student.getEmail().get();
+                        student.setTitle(obj.getString("title"));
+                        student.setPictureUrl("https://cdn.local.epitech.eu/userprofil/profilview/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg");
+                        student.setStudentYear(obj.getString("studentyear"));
                         nameLabel.setText(obj.getString("title"));
                         yearLabel.setText(obj.getString("studentyear") + "ème année");
                         creditsLabel.setText(obj.getString("credits"));
@@ -250,8 +258,19 @@ public class StudentsController implements Initializable {
     public void studentActivities() throws IOException {
         FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("../views/student_activities.fxml"));
         Parent root = loader.load();
-        launchWindow("Activités de l'étudiant", root);
-        //newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);
+        StudentActivitiesController t = loader.getController();
+        RecursiveTreeItem selectRow = (RecursiveTreeItem) studentTableView.getSelectionModel().getSelectedItem();
+        if (selectRow != null) {
+            Student student = (Student) selectRow.getValue();
+            try {
+                t.setStudent((Student) student.clone());
+            } catch (CloneNotSupportedException e) {
+                e.printStackTrace();
+            }
+            launchWindow("Activités de l'étudiant", root);
+        } else {
+            Platform.runLater(() -> new JFXSnackbar(rootPane).show("Veuillez selectionner un étudiant", 3000));
+        }
     }
 
     public void searchFilter(Event event) throws JSONException{

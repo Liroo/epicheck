@@ -10,8 +10,10 @@ import javafx.beans.property.StringProperty;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by Kevin on 17/10/2016.
@@ -26,6 +28,7 @@ public class Activity extends RecursiveTreeObject<Activity> {
     private StringProperty codeInstance;
     private StringProperty codeActi;
     private StringProperty codeEvent;
+    private StringProperty datePresence;
 
     public Activity(String title, String module, String beginDate, String endDate) {
         this.actiTitle = new SimpleStringProperty(title);
@@ -106,6 +109,30 @@ public class Activity extends RecursiveTreeObject<Activity> {
                 call.onFailure("connection interrupted");
             }
         });
+    }
+
+    public StringProperty getDatePresence() {
+        if (datePresence.get().equals("null"))
+            return (new SimpleStringProperty(""));
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            DateFormat extern = new SimpleDateFormat("HH:mm");
+            Date date_ret = format.parse(datePresence.get());
+            return (new SimpleStringProperty(extern.format(date_ret)));
+        } catch (ParseException e) {
+            return datePresence;
+        }
+    }
+
+    public void setDatePresence() {
+        Calendar now = Calendar.getInstance();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        now.setTimeZone(TimeZone.getTimeZone("Europe/Paris"));
+        datePresence = new SimpleStringProperty(format.format(now.getTime()));
+    }
+
+    public void setDatePresence(String date) {
+        this.datePresence = new SimpleStringProperty(date);
     }
 
     @Override
