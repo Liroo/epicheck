@@ -20,7 +20,7 @@ Navigation with TabPane, almost things managed thanks to TableView.
 This project also contains an API to connect intra.epitech.eu, the NFC Database and our database.
 Developed in NodeJS with MongoDB.
 
-# CREDITS
+# Credits
 Created by Epitech Students for Epitech !
 
 Developers:
