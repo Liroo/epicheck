@@ -7,7 +7,7 @@ Thanks to a NFC Reader provided, the students have only to pass the card above t
 
 # Client JavaFX
 This project contains a java client, connecting the NFC Reader to the API
-<img src="http://zupimages.net/up/16/44/108y.gif>
+<img src="http://zupimages.net/up/16/44/108y.gif">
 
 # API
 This project also contains an API to connect intra.epitech.eu, the nfc database and our database-
