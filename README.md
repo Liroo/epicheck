@@ -26,5 +26,4 @@ Created by Epitech Students for Epitech !
 Developers:
 
 [Jean BARRIÈRE](https://github.com/JeanBarriere)
-
 [Kévin EMPOCIELLO](https://github.com/nekfeu)
