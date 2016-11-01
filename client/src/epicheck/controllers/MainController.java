@@ -53,23 +53,11 @@ public class MainController implements Initializable {
 
         examTab.setText("Activités");
         examTab.setContent(activityPane);
-        /* list examens (name, debut, fin) (pour activité - année - module - ville semestre 1? - acti ID - event ID)
-           ajouter examen / editer examen / supprimer examen (pop up)
-           lancer la session (nouvelle page) - connecter rfid (si pas deja fait) - last photo + name (en dessous tableview all) - finir session
-        */
-
         studentTab.setText("Étudiants");
         studentTab.setContent(studentsPane);
-        /* list students (mail, rfid, ionisID)
-         */
 
         paramsTab.setText("Paramètres");
         paramsTab.setContent(paramsPane);
-        /*
-            Connecter le lecteur / deconnecter
-            Autologin (editText)
-         */
-
 
         tabPane.getTabs().add(examTab);
         tabPane.getTabs().add(studentTab);

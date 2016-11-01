@@ -36,7 +36,8 @@
 }
 
 .jfx-text-area, .text-area{
-	-fx-font-weight: BOLD;
+	-fx-font-weight: NORMAL;
+	-fx-background-color: transparent;
 }
 
 .jfx-text-field:error, .jfx-password-field:error, .jfx-text-area:error{

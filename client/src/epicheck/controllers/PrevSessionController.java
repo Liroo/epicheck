@@ -11,11 +11,19 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ResourceBundle;
 
 /**
@@ -23,6 +31,7 @@ import java.util.ResourceBundle;
  */
 public class PrevSessionController extends AbstractSession implements Initializable {
     private JSONObject activity_json;
+    private Stage stage;
 
     @FXML
     AnchorPane root;
@@ -33,12 +42,39 @@ public class PrevSessionController extends AbstractSession implements Initializa
     @FXML
     private JFXTreeTableView table;
 
+    private JSONArray studs;
+    private ObservableList<Student> students;
+
 
     @FXML
-    private void export() {
-        // TODO: 10/26/16 : need to export the student list in csv
-        Platform.runLater(() -> new JFXSnackbar(root).show("Not implemented yet", 2000));
+    private void export() throws IOException, JSONException {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Exportation de la liste des inscrits à : " + activity_json.getString("actiTitle"));
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+        fileChooser.setSelectedExtensionFilter(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+        fileChooser.setInitialFileName(activity_json.getString("actiTitle"));
+        File file = fileChooser.showSaveDialog(stage);
+
+        if (file != null) {
+            if (!FileUtils.getExtension(file.getName()).equalsIgnoreCase("csv")) {
+                file = new File(file.getAbsolutePath() + ".csv");
+            }
+            openFile(file);
+        }
     }
+
+    private void openFile(File file) {
+        try {
+            String data = "Email,Date\n";
+            for (int i = 0; i < students.size(); i++)
+                data += students.get(i).getEmail().get() + "," + students.get(i).getExportDate().get() + "\n";
+            Files.write(Paths.get(file.getAbsolutePath()), data.getBytes());
+            Platform.runLater(() -> new JFXSnackbar(root).show("Exportation terminée", 2000));
+        } catch (IOException ex) {
+            Platform.runLater(() -> new JFXSnackbar(root).show("Une erreur s'est produite lors de l'exportation", 2000));
+        }
+    }
+
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,10 +97,10 @@ public class PrevSessionController extends AbstractSession implements Initializa
         email.setMaxWidth(260);
         check.setMinWidth(200);
 
-        ObservableList<Student> students = FXCollections.observableArrayList();
+        students = FXCollections.observableArrayList();
 
         try {
-            JSONArray studs = activity_json.getJSONArray("students");
+            studs = activity_json.getJSONArray("students");
 
             for(int i = 0; i < studs.length(); i++) {
                 JSONObject stud = studs.getJSONObject(i);
@@ -80,5 +116,10 @@ public class PrevSessionController extends AbstractSession implements Initializa
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 }

@@ -40,6 +40,18 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
         }
     }
 
+    public StringProperty getExportDate() {
+        try {
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            DateFormat extern = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            Date date_ret = format.parse(date.get());
+            return (new SimpleStringProperty(extern.format(date_ret)));
+        } catch (ParseException e) {
+            return date;
+        }
+    }
+
+
     public void setTitle(String title) {
         this.title = new SimpleStringProperty(title);
     }

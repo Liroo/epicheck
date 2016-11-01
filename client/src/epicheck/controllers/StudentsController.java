@@ -3,16 +3,12 @@ package epicheck.controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import com.mb3364.http.HttpResponseHandler;
-import com.sun.xml.internal.ws.developer.SerializationFeature;
 import epicheck.Main;
-import epicheck.apimodels.Activity;
 import epicheck.apimodels.Student;
 import epicheck.utils.ApiRequest;
 import epicheck.utils.ApiUtils;
 import epicheck.utils.Preferences;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.Event;
@@ -33,9 +29,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.print.DocFlavor;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +113,7 @@ public class StudentsController implements Initializable {
 
         Platform.runLater(() -> {
             final Circle clip = new Circle(55.0D, 55.0D, 55);
-            profilePicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/kevin.empociello.jpg"));
+//            profilePicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/kevin.empociello.jpg"));
             profilePicture.setClip(clip);
 
         });
@@ -156,7 +150,7 @@ public class StudentsController implements Initializable {
 
             @Override
             public void onFailure(String err) {
-                System.out.println("err = [" + err + "]");
+                Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur pendant le téléchargement de la liste des étudiants", 3000));
             }
         });
 
@@ -182,7 +176,6 @@ public class StudentsController implements Initializable {
                             markValLabel.get(i).setText("" + tmp.getInt("final_note"));
                         }
                     } catch (Exception e) {
-                        System.out.println("e = " + e);
                         System.out.println("Failed parsing JSON");
                     }
                 });

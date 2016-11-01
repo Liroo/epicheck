@@ -91,7 +91,6 @@ public class Activity extends RecursiveTreeObject<Activity> {
 
     public void getRegisteredStudents(ApiRequest.JSONArrayListener call) {
         String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/module/" + scholarYear.get() + "/" + codeModule.get() + "/" + codeInstance.get() + "/" + codeActi.get() + "/" + codeEvent.get() + "/registered?format=json";
-        System.out.println(URL);
         ApiUtils.get().exec(ApiUtils.RequestType.GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
@@ -140,7 +139,6 @@ public class Activity extends RecursiveTreeObject<Activity> {
 
     public void forcePresenceUser(String email, String status, JSONObjectListener call) {
         String URL = "https://intra.epitech.eu/" + Preferences.get().getAutoLogin() + "/module/" + scholarYear.get() + "/" + codeModule.get() + "/" + codeInstance.get() + "/" + codeActi.get() + "/" + codeEvent.get() + "/updateregistered?format=json";
-        System.out.println(URL);
         RequestParams params = new RequestParams();
         params.put("items[0][login]", email);
         params.put("items[0][present]", status);

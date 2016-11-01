@@ -316,6 +316,9 @@
   
   <target name="artifact.epicheck" depends="init.artifacts, compile.module.epicheck" description="Build &#39;Epicheck&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
     <mkdir dir="${artifact.output.epicheck}"/>
+    <ant antfile="client.xml" target="all" dir="${basedir}">
+      <property name="artifact.output.path" value="${artifact.output.epicheck}"/>
+    </ant>
     <copy todir="${artifact.temp.output.JavaFXApp}">
       <fileset dir="${epicheck.output.dir}"/>
     </copy>
@@ -357,9 +360,6 @@
     </fx:fileset>
     <fx:fileset id="all_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar"/>
     <fx:application id="JavaFXApp_id" name="Epicheck" mainClass="epicheck.Main" version="1.0"/>
-    <fx:csstobin outdir="${artifact.temp.output.JavaFXApp}">
-      <fileset dir="${artifact.temp.output.JavaFXApp}" includes="**/*.css"/>
-    </fx:csstobin>
     <fx:jar destfile="${artifact.temp.output.JavaFXApp}/JavaFXApp.jar">
       <fx:application refid="JavaFXApp_id"/>
       <fileset dir="${artifact.temp.output.JavaFXApp}" excludes="**/*.jar"/>
@@ -368,25 +368,13 @@
       </fx:resources>
       <manifest/>
     </fx:jar>
-    <fx:deploy width="1200" height="750" updatemode="background" outdir="${artifact.temp.output.JavaFXApp}/deploy" outfile="JavaFXApp" nativeBundles="all">
-      <fx:permissions elevated="true"/>
+    <fx:deploy width="1200" height="750" updatemode="always" outdir="${artifact.temp.output.JavaFXApp}/deploy" outfile="JavaFXApp" nativeBundles="all">
       <fx:application refid="JavaFXApp_id"/>
       <fx:info title="Epicheck" vendor="Epitech Bordeaux" description="Application interne EPITECH de validation de présence d&#39;étudiants aux activités par technologie NFC"/>
       <fx:resources>
         <fx:fileset refid="all_JavaFXApp"/>
       </fx:resources>
     </fx:deploy>
-    <property name="artifact.sign.vendor.JavaFXApp" value="CN=Epitech Bordeaux"/>
-    <property name="artifact.sign.alias.JavaFXApp" value="jb"/>
-    <property name="artifact.sign.keystore.JavaFXApp" value="${artifact.temp.output.JavaFXApp}/jb-key.jks"/>
-    <property name="artifact.sign.storepass.JavaFXApp" value="storepass"/>
-    <property name="artifact.sign.keypass.JavaFXApp" value="keypass"/>
-    <genkey dname="${artifact.sign.vendor.JavaFXApp}" alias="${artifact.sign.alias.JavaFXApp}" keystore="${artifact.sign.keystore.JavaFXApp}" storepass="${artifact.sign.storepass.JavaFXApp}" keypass="${artifact.sign.keypass.JavaFXApp}"/>
-    <signjar alias="${artifact.sign.alias.JavaFXApp}" keystore="${artifact.sign.keystore.JavaFXApp}" storepass="${artifact.sign.storepass.JavaFXApp}" keypass="${artifact.sign.keypass.JavaFXApp}">
-      <fileset dir="${artifact.temp.output.JavaFXApp}/deploy">
-        <include name="*.jar"/>
-      </fileset>
-    </signjar>
     <copy todir="${artifact.output.epicheck}">
       <fileset dir="${artifact.temp.output.JavaFXApp}/deploy"/>
     </copy>

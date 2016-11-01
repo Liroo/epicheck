@@ -11,6 +11,10 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.*;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.TerminalFactory;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 
@@ -23,7 +27,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception{
         // Set logger
         org.apache.log4j.BasicConfigurator.configure();
-        Logger.getRootLogger().setLevel(Level.INFO);
+        Logger.getRootLogger().setLevel(Level.DEBUG);
 
         this.primaryStage = primaryStage;
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Bold.ttf").toExternalForm(), 15);

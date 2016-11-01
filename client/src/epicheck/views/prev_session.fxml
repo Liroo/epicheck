@@ -9,7 +9,7 @@
    <children>
       <Pane prefHeight="800.0" prefWidth="600.0">
          <children>
-            <JFXTreeTableView fx:id="table" layoutX="20.0" layoutY="20.0" prefHeight="700.0" prefWidth="560.0" />
+            <JFXTreeTableView fx:id="table" layoutX="20.0" layoutY="20.0" prefHeight="700.0" prefWidth="560.0" style="-fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 15;" />
             <JFXButton fx:id="btn_export" layoutX="440.0" layoutY="738.0" mnemonicParsing="false" onAction="#export" prefHeight="48.0" prefWidth="140.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Exporter" textFill="WHITE" />
          </children></Pane>
    </children>
