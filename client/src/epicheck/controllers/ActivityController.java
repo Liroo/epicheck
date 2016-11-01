@@ -79,10 +79,10 @@ public class ActivityController implements Initializable {
         beginDate = new JFXTreeTableColumn<>("Date début");
         endDate = new JFXTreeTableColumn<>("Date fin");
 
-        name.setMaxWidth(400);
-        module.setMaxWidth(330);
-        beginDate.setMaxWidth(190);
-        endDate.setMaxWidth(190);
+        name.setMinWidth(420);
+        module.setMinWidth(320);
+        beginDate.setMinWidth(218);
+        endDate.setMinWidth(218);
 
 
         name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
