@@ -17,6 +17,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
 import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.shape.Circle;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,6 +33,9 @@ public class StudentActivitiesController implements Initializable {
 
     @FXML
     private JFXTreeTableView tableView;
+
+    @FXML
+    private ImageView profilePicture;
 
     @FXML
     private Label titleLabel;
@@ -53,34 +57,39 @@ public class StudentActivitiesController implements Initializable {
         System.out.println("Welcome in student's activities");
 
         JFXTreeTableColumn<Activity, String> name = new JFXTreeTableColumn<>("Activité");
+        JFXTreeTableColumn<Activity, String> module = new JFXTreeTableColumn<>("Module");
         JFXTreeTableColumn<epicheck.apimodels.Activity, String> presence = new JFXTreeTableColumn<>("Présence");
 
-        name.setMinWidth(420);
-        presence.setMinWidth(420);
-        name.setMaxWidth(420);
-        presence.setMaxWidth(420);
+        name.setMinWidth(360);
+        presence.setMinWidth(200);
+        name.setMaxWidth(360);
+        presence.setMaxWidth(200);
+        module.setMinWidth(270);
+        module.setMaxWidth(270);
+
 
         name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
+        module.setCellValueFactory(param -> param.getValue().getValue().getModuleTitle());
         presence.setCellValueFactory(param -> param.getValue().getValue().getDatePresence());
 
         activities = FXCollections.observableArrayList();
         searchActivities = FXCollections.observableArrayList();
 
         final TreeItem<Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
-        tableView.getColumns().setAll(name, presence);
-        tableView.setRoot(root);
+        tableView.getColumns().setAll(name, module, presence);
         tableView.setShowRoot(false);
     }
 
     public void updateController() {
         final Circle clip = new Circle(35.0D, 35.0D, 35);
-        //profilePicture.setImage(new Image(student.getPictureUrl().get()));
-        //profilePicture.setClip(clip);
+        profilePicture.setImage(new Image(student.getPictureUrl().get()));
+        profilePicture.setClip(clip);
         titleLabel.setText(student.getTitle().get());
         yearLabel.setText(student.getStudentYear().get() + "ème année");
         ApiRequest.get().getStudentByEmail(student.getEmail().get(), new ApiRequest.JSONObjectListener() {
             @Override
             public void onComplete(JSONObject res) {
+                Platform.runLater(() -> {
                 try {
                     activities_json = res.getJSONArray("activities");
                     for (int i = 0 ; i < activities_json.length() ; i++) {
@@ -91,9 +100,14 @@ public class StudentActivitiesController implements Initializable {
                         newAct.setDatePresence(presenceObj.getString("date"));
                         activities.add(newAct);
                     }
+                    TreeItem<Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
+                    tableView.setRoot(root);
+                    tableView.setShowRoot(false);
+                    tableView.getSelectionModel().clearSelection();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                });
                 System.out.println("res = " + res);
             }
 
@@ -115,7 +129,7 @@ public class StudentActivitiesController implements Initializable {
         }
         for (int i = 0; i < activities_json.length(); i++) {
             JSONObject obj = activities_json.getJSONObject(i);
-            if (obj.getString("moduleTitle").toLowerCase().contains(searchField.getText().toLowerCase())) {
+            if (obj.getString("moduleTitle").toLowerCase().contains(searchField.getText().toLowerCase()) || obj.getString("actiTitle").toLowerCase().contains(searchField.getText().toLowerCase())) {
                 Activity newAct = new epicheck.apimodels.Activity(obj.getString("actiTitle"), obj.getString("moduleTitle"), obj.getString("dateFrom"), obj.getString("dateTo"),
                         obj.getString("scholarYear"), obj.getString("codeModule"), obj.getString("codeInstance"), obj.getString("codeActi"), obj.getString("codeEvent"));
                 JSONObject presenceObj = obj.getJSONObject("presence");
@@ -124,7 +138,10 @@ public class StudentActivitiesController implements Initializable {
             }
         }
         final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(searchActivities, RecursiveTreeObject::getChildren);
-        Platform.runLater(() -> tableView.setRoot(root));
+        Platform.runLater(() -> {
+            tableView.setRoot(root);
+            tableView.setShowRoot(false);
+        });
     }
 
     public void setStudent(Student st) {

@@ -113,13 +113,13 @@ public class Activity extends RecursiveTreeObject<Activity> {
             }
         });
     }
-    
+
     public StringProperty getDatePresence() {
         if (datePresence.get().equals("null"))
             return (new SimpleStringProperty(""));
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
-            DateFormat extern = new SimpleDateFormat("HH:mm");
+            DateFormat extern = new SimpleDateFormat("dd-MM HH:mm");
             Date date_ret = format.parse(datePresence.get());
             return (new SimpleStringProperty(extern.format(date_ret)));
         } catch (ParseException e) {
