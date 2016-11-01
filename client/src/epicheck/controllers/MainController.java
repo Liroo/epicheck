@@ -5,6 +5,7 @@ package epicheck.controllers;
  */
 
 import com.jfoenix.controls.JFXTabPane;
+import epicheck.Main;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -35,9 +36,9 @@ public class MainController implements Initializable {
         Pane paramsPane = new Pane();
 
         try {
-            FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("../views/activity.fxml"));
-            FXMLLoader studentsLoader = new FXMLLoader(getClass().getResource("../views/students.fxml"));
-            FXMLLoader paramsLoader = new FXMLLoader(getClass().getResource("../views/params.fxml"));
+            FXMLLoader activityLoader = new FXMLLoader(getClass().getResource("/epicheck/views/activity.fxml"));
+            FXMLLoader studentsLoader = new FXMLLoader(getClass().getResource("/epicheck/views/students.fxml"));
+            FXMLLoader paramsLoader = new FXMLLoader(getClass().getResource("/epicheck/views/params.fxml"));
 
             activityPane = (Pane) activityLoader.load();
             studentsPane = (Pane) studentsLoader.load();

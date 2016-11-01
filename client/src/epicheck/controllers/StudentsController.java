@@ -248,7 +248,7 @@ public class StudentsController implements Initializable {
 
     @FXML
     public void studentActivities() throws IOException {
-        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("../views/student_activities.fxml"));
+        FXMLLoader loader = new FXMLLoader(ActivityController.class.getResource("/epicheck/views/student_activities.fxml"));
         Parent root = loader.load();
         launchWindow("Activités de l'étudiant", root);
         //newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);

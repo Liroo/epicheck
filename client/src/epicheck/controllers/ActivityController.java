@@ -215,9 +215,9 @@ public class ActivityController implements Initializable {
                 Platform.runLater(() -> {
                     try {
                         if (pastActivity.isSelected())
-                            newWindow("../views/prev_session.fxml", "Aperçu de session", activity, res);
+                            newWindow("/epicheck/views/prev_session.fxml", "Aperçu de session", activity, res);
                         else
-                            newWindow("../views/session.fxml", "Session de validation", activity, res);
+                            newWindow("/epicheck/views/session.fxml", "Session de validation", activity, res);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

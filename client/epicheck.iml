@@ -15,5 +15,7 @@
     <orderEntry type="library" name="async-http-client-2.1.21" level="project" />
     <orderEntry type="library" name="org.json:json:20080701" level="project" />
     <orderEntry type="library" name="javax.mail:mail:1.4" level="project" />
+    <orderEntry type="library" name="com.zenjava:javafx-maven-plugin:8.7.0" level="project" />
+    <orderEntry type="library" name="com.intellij:javac2:7.0.3" level="project" />
   </component>
 </module>

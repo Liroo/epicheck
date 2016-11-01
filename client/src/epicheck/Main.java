@@ -34,7 +34,7 @@ public class Main extends Application {
         TrustAllHttpsDomain();
 
         Platform.setImplicitExit(false);
-        FXMLLoader load = new FXMLLoader(getClass().getResource("views/home.fxml"));
+        FXMLLoader load = new FXMLLoader(getClass().getResource("/epicheck/views/home.fxml"));
         Parent root = load.load();
         mainController = load.getController();
 

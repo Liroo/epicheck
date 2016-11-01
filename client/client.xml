@@ -1,0 +1,405 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="client" default="all">
+  
+  
+  <property file="client.properties"/>
+  <!-- Uncomment the following property if no tests compilation is needed -->
+  <!-- 
+  <property name="skip.tests" value="true"/>
+   -->
+  
+  <!-- Compiler options -->
+  
+  <property name="compiler.debug" value="on"/>
+  <property name="compiler.generate.no.warnings" value="off"/>
+  <property name="compiler.args" value=""/>
+  <property name="compiler.max.memory" value="700m"/>
+  <patternset id="ignored.files">
+    <exclude name="**/*.hprof/**"/>
+    <exclude name="**/*.pyc/**"/>
+    <exclude name="**/*.pyo/**"/>
+    <exclude name="**/*.rbc/**"/>
+    <exclude name="**/*.yarb/**"/>
+    <exclude name="**/*~/**"/>
+    <exclude name="**/.DS_Store/**"/>
+    <exclude name="**/.git/**"/>
+    <exclude name="**/.hg/**"/>
+    <exclude name="**/.svn/**"/>
+    <exclude name="**/CVS/**"/>
+    <exclude name="**/RCS/**"/>
+    <exclude name="**/SCCS/**"/>
+    <exclude name="**/__pycache__/**"/>
+    <exclude name="**/_svn/**"/>
+    <exclude name="**/rcs/**"/>
+    <exclude name="**/vssver.scc/**"/>
+    <exclude name="**/vssver2.scc/**"/>
+  </patternset>
+  <patternset id="library.patterns">
+    <include name="*.war"/>
+    <include name="*.swc"/>
+    <include name="*.apk"/>
+    <include name="*.zip"/>
+    <include name="*.ear"/>
+    <include name="*.egg"/>
+    <include name="*.ane"/>
+    <include name="*.jar"/>
+  </patternset>
+  <patternset id="compiler.resources">
+    <exclude name="**/?*.java"/>
+    <exclude name="**/?*.form"/>
+    <exclude name="**/?*.class"/>
+    <exclude name="**/?*.groovy"/>
+    <exclude name="**/?*.scala"/>
+    <exclude name="**/?*.flex"/>
+    <exclude name="**/?*.kt"/>
+    <exclude name="**/?*.clj"/>
+  </patternset>
+  
+  <!-- JDK definitions -->
+  
+  <property name="jdk.bin.1.8" value="${jdk.home.1.8}/bin"/>
+  <path id="jdk.classpath.1.8">
+    <fileset dir="${jdk.home.1.8}">
+      <include name="jre/lib/charsets.jar"/>
+      <include name="jre/lib/ext/cldrdata.jar"/>
+      <include name="jre/lib/ext/dnsns.jar"/>
+      <include name="jre/lib/ext/jaccess.jar"/>
+      <include name="jre/lib/ext/localedata.jar"/>
+      <include name="jre/lib/ext/nashorn.jar"/>
+      <include name="jre/lib/ext/sunec.jar"/>
+      <include name="jre/lib/ext/sunjce_provider.jar"/>
+      <include name="jre/lib/ext/sunpkcs11.jar"/>
+      <include name="jre/lib/ext/zipfs.jar"/>
+      <include name="jre/lib/jce.jar"/>
+      <include name="jre/lib/jsse.jar"/>
+      <include name="jre/lib/management-agent.jar"/>
+      <include name="jre/lib/resources.jar"/>
+      <include name="jre/lib/rt.jar"/>
+      <include name="jre/lib/ext/jfxrt.jar"/>
+    </fileset>
+  </path>
+  
+  <property name="project.jdk.home" value="${jdk.home.1.8}"/>
+  <property name="project.jdk.bin" value="${jdk.bin.1.8}"/>
+  <property name="project.jdk.classpath" value="jdk.classpath.1.8"/>
+  
+  
+  <!-- Project Libraries -->
+  
+  <path id="library.async-http-client-2.1.2.classpath"/>
+  
+  <path id="library.async-http-client-2.1.21.classpath">
+    <pathelement location="${basedir}/lib/async-http-client-2.1.2.jar"/>
+  </path>
+  
+  <path id="library.com.intellij:javac2:7.0.3.classpath">
+    <pathelement location="${basedir}/lib/ant-1.7.0.jar"/>
+    <pathelement location="${basedir}/lib/ant-launcher-1.7.0.jar"/>
+    <pathelement location="${basedir}/lib/asm-3.0.jar"/>
+    <pathelement location="${basedir}/lib/asm-commons-3.0.jar"/>
+    <pathelement location="${basedir}/lib/asm-tree-3.0.jar"/>
+    <pathelement location="${basedir}/lib/forms-1.1-preview.jar"/>
+    <pathelement location="${basedir}/lib/javac2-7.0.3.jar"/>
+    <pathelement location="${basedir}/lib/jdom-1.0.jar"/>
+  </path>
+  
+  <path id="library.com.jfoenix:jfoenix:1.0.0.classpath">
+    <pathelement location="${basedir}/lib/jfoenix-1.0.0.jar"/>
+  </path>
+  
+  <path id="library.com.zenjava:javafx-maven-plugin:8.7.0.classpath">
+    <pathelement location="${basedir}/lib/aether-api-1.7.jar"/>
+    <pathelement location="${basedir}/lib/aether-impl-1.7.jar"/>
+    <pathelement location="${basedir}/lib/aether-spi-1.7.jar"/>
+    <pathelement location="${basedir}/lib/aether-util-1.7.jar"/>
+    <pathelement location="${basedir}/lib/ant-javafx.jar"/>
+    <pathelement location="${basedir}/lib/javafx-maven-plugin-8.7.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-aether-provider-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-artifact-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-core-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-model-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-model-builder-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-plugin-api-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-repository-metadata-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-settings-3.0.jar"/>
+    <pathelement location="${basedir}/lib/maven-settings-builder-3.0.jar"/>
+    <pathelement location="${basedir}/lib/plexus-cipher-1.4.jar"/>
+    <pathelement location="${basedir}/lib/plexus-classworlds-2.2.3.jar"/>
+    <pathelement location="${basedir}/lib/plexus-component-annotations-1.5.5.jar"/>
+    <pathelement location="${basedir}/lib/plexus-interpolation-1.14.jar"/>
+    <pathelement location="${basedir}/lib/plexus-sec-dispatcher-1.3.jar"/>
+    <pathelement location="${basedir}/lib/plexus-utils-2.0.4.jar"/>
+    <pathelement location="${basedir}/lib/sisu-guice-2.1.7-noaop.jar"/>
+    <pathelement location="${basedir}/lib/sisu-inject-bean-1.4.2.jar"/>
+    <pathelement location="${basedir}/lib/sisu-inject-plexus-1.4.2.jar"/>
+  </path>
+  
+  <path id="library.de.jensd:fontawesomefx:8.0.13.classpath">
+    <pathelement location="${basedir}/lib/fontawesomefx-8.0.13.jar"/>
+  </path>
+  
+  <path id="library.javax.mail:mail:1.4.classpath">
+    <pathelement location="${basedir}/lib/activation-1.1.jar"/>
+    <pathelement location="${basedir}/lib/mail-1.4.jar"/>
+  </path>
+  
+  <path id="library.org.json:json:20080701.classpath">
+    <pathelement location="${basedir}/lib/json-20080701.jar"/>
+  </path>
+  
+  <path id="library.org.nfctools:nfctools-core:1.0.m8.classpath">
+    <pathelement location="${basedir}/lib/nfctools-api-1.0.M8.jar"/>
+    <pathelement location="${basedir}/lib/nfctools-core-1.0.M8.jar"/>
+    <pathelement location="${basedir}/lib/nfctools-ndef-1.0.M8.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-api-1.5.10.jar"/>
+  </path>
+  
+  <path id="library.org.slf4j:slf4j-log4j12:1.7.21.classpath">
+    <pathelement location="${basedir}/lib/log4j-1.2.17.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-api-1.7.21.jar"/>
+    <pathelement location="${basedir}/lib/slf4j-log4j12-1.7.21.jar"/>
+  </path>
+  <!-- Register Custom Compiler Taskdefs -->
+  <property name="javac2.home" value="${idea.home}/lib"/>
+  <path id="javac2.classpath">
+    <pathelement location="${javac2.home}/javac2.jar"/>
+    <pathelement location="${javac2.home}/jdom.jar"/>
+    <pathelement location="${javac2.home}/asm-all.jar"/>
+    <pathelement location="${javac2.home}/jgoodies-forms.jar"/>
+  </path>
+  <target name="register.custom.compilers">
+    <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.classpath"/>
+    <taskdef name="instrumentIdeaExtensions" classname="com.intellij.ant.InstrumentIdeaExtensions" classpathref="javac2.classpath"/>
+  </target>
+  
+  <!-- Modules -->
+  
+  
+  <!-- Module epicheck -->
+  
+  <dirname property="module.epicheck.basedir" file="${ant.file}"/>
+  
+  
+  <property name="module.jdk.home.epicheck" value="${jdk.home.1.8}"/>
+  <property name="module.jdk.bin.epicheck" value="${jdk.bin.1.8}"/>
+  <property name="module.jdk.classpath.epicheck" value="jdk.classpath.1.8"/>
+  
+  <property name="compiler.args.epicheck" value="-encoding UTF-8 -source 8 -target 8 ${compiler.args}"/>
+  
+  <property name="epicheck.output.dir" value="${module.epicheck.basedir}/out/production/epicheck"/>
+  <property name="epicheck.testoutput.dir" value="${module.epicheck.basedir}/out/test/epicheck"/>
+  
+  <path id="epicheck.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="epicheck.module.production.classpath">
+    <path refid="${module.jdk.classpath.epicheck}"/>
+    <path refid="library.org.nfctools:nfctools-core:1.0.m8.classpath"/>
+    <path refid="library.org.slf4j:slf4j-log4j12:1.7.21.classpath"/>
+    <path refid="library.com.jfoenix:jfoenix:1.0.0.classpath"/>
+    <path refid="library.de.jensd:fontawesomefx:8.0.13.classpath"/>
+    <path refid="library.async-http-client-2.1.2.classpath"/>
+    <path refid="library.async-http-client-2.1.21.classpath"/>
+    <path refid="library.org.json:json:20080701.classpath"/>
+    <path refid="library.javax.mail:mail:1.4.classpath"/>
+    <path refid="library.com.zenjava:javafx-maven-plugin:8.7.0.classpath"/>
+    <path refid="library.com.intellij:javac2:7.0.3.classpath"/>
+  </path>
+  
+  <path id="epicheck.runtime.production.module.classpath">
+    <pathelement location="${epicheck.output.dir}"/>
+    <path refid="library.org.nfctools:nfctools-core:1.0.m8.classpath"/>
+    <path refid="library.org.slf4j:slf4j-log4j12:1.7.21.classpath"/>
+    <path refid="library.com.jfoenix:jfoenix:1.0.0.classpath"/>
+    <path refid="library.de.jensd:fontawesomefx:8.0.13.classpath"/>
+    <path refid="library.async-http-client-2.1.2.classpath"/>
+    <path refid="library.async-http-client-2.1.21.classpath"/>
+    <path refid="library.org.json:json:20080701.classpath"/>
+    <path refid="library.javax.mail:mail:1.4.classpath"/>
+    <path refid="library.com.zenjava:javafx-maven-plugin:8.7.0.classpath"/>
+    <path refid="library.com.intellij:javac2:7.0.3.classpath"/>
+  </path>
+  
+  <path id="epicheck.module.classpath">
+    <path refid="${module.jdk.classpath.epicheck}"/>
+    <pathelement location="${epicheck.output.dir}"/>
+    <path refid="library.org.nfctools:nfctools-core:1.0.m8.classpath"/>
+    <path refid="library.org.slf4j:slf4j-log4j12:1.7.21.classpath"/>
+    <path refid="library.com.jfoenix:jfoenix:1.0.0.classpath"/>
+    <path refid="library.de.jensd:fontawesomefx:8.0.13.classpath"/>
+    <path refid="library.async-http-client-2.1.2.classpath"/>
+    <path refid="library.async-http-client-2.1.21.classpath"/>
+    <path refid="library.org.json:json:20080701.classpath"/>
+    <path refid="library.javax.mail:mail:1.4.classpath"/>
+    <path refid="library.com.zenjava:javafx-maven-plugin:8.7.0.classpath"/>
+    <path refid="library.com.intellij:javac2:7.0.3.classpath"/>
+  </path>
+  
+  <path id="epicheck.runtime.module.classpath">
+    <pathelement location="${epicheck.testoutput.dir}"/>
+    <pathelement location="${epicheck.output.dir}"/>
+    <path refid="library.org.nfctools:nfctools-core:1.0.m8.classpath"/>
+    <path refid="library.org.slf4j:slf4j-log4j12:1.7.21.classpath"/>
+    <path refid="library.com.jfoenix:jfoenix:1.0.0.classpath"/>
+    <path refid="library.de.jensd:fontawesomefx:8.0.13.classpath"/>
+    <path refid="library.async-http-client-2.1.2.classpath"/>
+    <path refid="library.async-http-client-2.1.21.classpath"/>
+    <path refid="library.org.json:json:20080701.classpath"/>
+    <path refid="library.javax.mail:mail:1.4.classpath"/>
+    <path refid="library.com.zenjava:javafx-maven-plugin:8.7.0.classpath"/>
+    <path refid="library.com.intellij:javac2:7.0.3.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.epicheck">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.epicheck">
+    <patternset refid="excluded.from.module.epicheck"/>
+  </patternset>
+  
+  <path id="epicheck.module.sourcepath">
+    <dirset dir="${module.epicheck.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.epicheck" depends="compile.module.epicheck.production,compile.module.epicheck.tests" description="Compile module epicheck"/>
+  
+  <target name="compile.module.epicheck.production" depends="register.custom.compilers" description="Compile module epicheck; production classes">
+    <mkdir dir="${epicheck.output.dir}"/>
+    <javac2 destdir="${epicheck.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.epicheck}/javac">
+      <compilerarg line="${compiler.args.epicheck}"/>
+      <bootclasspath refid="epicheck.module.bootclasspath"/>
+      <classpath refid="epicheck.module.production.classpath"/>
+      <src refid="epicheck.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.epicheck"/>
+    </javac2>
+    
+    <copy todir="${epicheck.output.dir}">
+      <fileset dir="${module.epicheck.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.epicheck.tests" depends="register.custom.compilers,compile.module.epicheck.production" description="compile module epicheck; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.epicheck" description="cleanup module">
+    <delete dir="${epicheck.output.dir}"/>
+    <delete dir="${epicheck.testoutput.dir}"/>
+  </target>
+  
+  <target name="init" description="Build initialization">
+    <!-- Perform any build initialization in this target -->
+  </target>
+  
+  <target name="clean" depends="clean.module.epicheck, clean.artifact.epicheck" description="cleanup all"/>
+  
+  <target name="build.modules" depends="init, clean, compile.module.epicheck" description="build all modules"/>
+  
+  <target name="init.artifacts">
+    <property name="artifacts.temp.dir" value="${basedir}/__artifacts_temp"/>
+    <property name="artifact.output.epicheck" value="${basedir}/out/artifacts/Epicheck"/>
+    <mkdir dir="${artifacts.temp.dir}"/>
+    <property name="artifact.temp.output.JavaFXApp" value="${artifacts.temp.dir}/JavaFXApp.jar"/>
+    <taskdef resource="com/sun/javafx/tools/ant/antlib.xml" uri="javafx:com.sun.javafx.tools.ant" classpath="${jdk.home.1.8}/lib/ant-javafx.jar"/>
+  </target>
+  
+  <target name="clean.artifact.epicheck" description="clean Epicheck artifact output">
+    <delete dir="${artifact.output.epicheck}"/>
+  </target>
+  
+  <target name="artifact.epicheck" depends="init.artifacts, compile.module.epicheck" description="Build &#39;Epicheck&#39; artifact" xmlns:fx="javafx:com.sun.javafx.tools.ant">
+    <mkdir dir="${artifact.output.epicheck}"/>
+    <copy todir="${artifact.temp.output.JavaFXApp}">
+      <fileset dir="${epicheck.output.dir}"/>
+    </copy>
+    <mkdir dir="${artifact.temp.output.JavaFXApp}/META-INF"/>
+    <copy file="${basedir}/META-INF/MANIFEST.MF" tofile="${artifact.temp.output.JavaFXApp}/META-INF/MANIFEST.MF"/>
+    <mkdir dir="${artifact.temp.output.JavaFXApp}/lib"/>
+    <copy file="${basedir}/lib/slf4j-log4j12-1.7.21.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-log4j12-1.7.21.jar"/>
+    <copy file="${basedir}/lib/slf4j-api-1.7.21.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-api-1.7.21.jar"/>
+    <copy file="${basedir}/lib/log4j-1.2.17.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/log4j-1.2.17.jar"/>
+    <copy file="${basedir}/lib/slf4j-log4j12-1.7.21.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-log4j12-1.7.21.jar"/>
+    <copy file="${basedir}/lib/slf4j-api-1.7.21.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-api-1.7.21.jar"/>
+    <copy file="${basedir}/lib/log4j-1.2.17.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/log4j-1.2.17.jar"/>
+    <copy file="${basedir}/lib/json-20080701.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/json-20080701.jar"/>
+    <copy file="${basedir}/lib/nfctools-core-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-core-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/nfctools-ndef-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-ndef-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/nfctools-api-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-api-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/slf4j-api-1.5.10.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-api-1.5.10.jar"/>
+    <copy file="${basedir}/lib/nfctools-core-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-core-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/nfctools-ndef-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-ndef-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/nfctools-api-1.0.M8.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/nfctools-api-1.0.M8.jar"/>
+    <copy file="${basedir}/lib/slf4j-api-1.5.10.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/slf4j-api-1.5.10.jar"/>
+    <copy file="${basedir}/lib/mail-1.4.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/mail-1.4.jar"/>
+    <copy file="${basedir}/lib/activation-1.1.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/activation-1.1.jar"/>
+    <copy file="${basedir}/lib/fontawesomefx-8.0.13.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/fontawesomefx-8.0.13.jar"/>
+    <copy file="${basedir}/lib/fontawesomefx-8.0.13.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/fontawesomefx-8.0.13.jar"/>
+    <copy file="${basedir}/lib/jfoenix-1.0.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/jfoenix-1.0.0.jar"/>
+    <copy file="${basedir}/lib/jfoenix-1.0.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/jfoenix-1.0.0.jar"/>
+    <copy file="${basedir}/lib/javac2-7.0.3.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/javac2-7.0.3.jar"/>
+    <copy file="${basedir}/lib/asm-commons-3.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/asm-commons-3.0.jar"/>
+    <copy file="${basedir}/lib/asm-tree-3.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/asm-tree-3.0.jar"/>
+    <copy file="${basedir}/lib/asm-3.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/asm-3.0.jar"/>
+    <copy file="${basedir}/lib/jdom-1.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/jdom-1.0.jar"/>
+    <copy file="${basedir}/lib/ant-1.7.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/ant-1.7.0.jar"/>
+    <copy file="${basedir}/lib/ant-launcher-1.7.0.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/ant-launcher-1.7.0.jar"/>
+    <copy file="${basedir}/lib/forms-1.1-preview.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/forms-1.1-preview.jar"/>
+    <copy file="${basedir}/lib/async-http-client-2.1.2.jar" tofile="${artifact.temp.output.JavaFXApp}/lib/async-http-client-2.1.2.jar"/>
+    <fx:fileset id="all_but_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar">
+      <exclude name="JavaFXApp.jar"/>
+    </fx:fileset>
+    <fx:fileset id="all_JavaFXApp" dir="${artifact.temp.output.JavaFXApp}" includes="**/*.jar"/>
+    <fx:application id="JavaFXApp_id" name="Epicheck" mainClass="epicheck.Main" version="1.0"/>
+    <fx:csstobin outdir="${artifact.temp.output.JavaFXApp}">
+      <fileset dir="${artifact.temp.output.JavaFXApp}" includes="**/*.css"/>
+    </fx:csstobin>
+    <fx:jar destfile="${artifact.temp.output.JavaFXApp}/JavaFXApp.jar">
+      <fx:application refid="JavaFXApp_id"/>
+      <fileset dir="${artifact.temp.output.JavaFXApp}" excludes="**/*.jar"/>
+      <fx:resources>
+        <fx:fileset refid="all_but_JavaFXApp"/>
+      </fx:resources>
+      <manifest/>
+    </fx:jar>
+    <fx:deploy width="1200" height="750" updatemode="background" outdir="${artifact.temp.output.JavaFXApp}/deploy" outfile="JavaFXApp" nativeBundles="all">
+      <fx:permissions elevated="true"/>
+      <fx:application refid="JavaFXApp_id"/>
+      <fx:info title="Epicheck" vendor="Epitech Bordeaux" description="Application interne EPITECH de validation de présence d&#39;étudiants aux activités par technologie NFC"/>
+      <fx:resources>
+        <fx:fileset refid="all_JavaFXApp"/>
+      </fx:resources>
+    </fx:deploy>
+    <property name="artifact.sign.vendor.JavaFXApp" value="CN=Epitech Bordeaux"/>
+    <property name="artifact.sign.alias.JavaFXApp" value="jb"/>
+    <property name="artifact.sign.keystore.JavaFXApp" value="${artifact.temp.output.JavaFXApp}/jb-key.jks"/>
+    <property name="artifact.sign.storepass.JavaFXApp" value="storepass"/>
+    <property name="artifact.sign.keypass.JavaFXApp" value="keypass"/>
+    <genkey dname="${artifact.sign.vendor.JavaFXApp}" alias="${artifact.sign.alias.JavaFXApp}" keystore="${artifact.sign.keystore.JavaFXApp}" storepass="${artifact.sign.storepass.JavaFXApp}" keypass="${artifact.sign.keypass.JavaFXApp}"/>
+    <signjar alias="${artifact.sign.alias.JavaFXApp}" keystore="${artifact.sign.keystore.JavaFXApp}" storepass="${artifact.sign.storepass.JavaFXApp}" keypass="${artifact.sign.keypass.JavaFXApp}">
+      <fileset dir="${artifact.temp.output.JavaFXApp}/deploy">
+        <include name="*.jar"/>
+      </fileset>
+    </signjar>
+    <copy todir="${artifact.output.epicheck}">
+      <fileset dir="${artifact.temp.output.JavaFXApp}/deploy"/>
+    </copy>
+    <delete includeemptydirs="true">
+      <fileset dir="${artifact.temp.output.JavaFXApp}"/>
+    </delete>
+  </target>
+  
+  <target name="build.all.artifacts" depends="artifact.epicheck" description="Build all artifacts">
+    
+    <!-- Delete temporary files -->
+    <delete dir="${artifacts.temp.dir}"/>
+  </target>
+  
+  <target name="all" depends="build.modules, build.all.artifacts" description="build all"/>
+</project>
