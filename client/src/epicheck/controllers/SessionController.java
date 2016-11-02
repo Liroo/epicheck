@@ -116,12 +116,12 @@ public class SessionController extends AbstractSession implements Initializable 
                             activity.forcePresenceUser(studentEmail, "present", new ApiRequest.JSONObjectListener() {
                                 @Override
                                 public void onComplete(JSONObject res) {
-                                    Platform.runLater(() -> new JFXSnackbar(root).show(studentEmail + " has been set present on the intranet", 2000));
+                                    Platform.runLater(() -> new JFXSnackbar(root).show(studentEmail + " a été noté présent sur l'intranet", 2000));
                                 }
 
                                 @Override
                                 public void onFailure(String err) {
-                                    Platform.runLater(() -> new JFXSnackbar(root).show("An error occured while setting " + studentEmail + " present", 2000));
+                                    Platform.runLater(() -> new JFXSnackbar(root).show("Erreur lors de la notation de " + studentEmail + " comme present", 2000));
                                 }
                             });
 
@@ -150,7 +150,7 @@ public class SessionController extends AbstractSession implements Initializable 
 
             @Override
             public void scanError(String error) {
-                Platform.runLater(() -> new JFXSnackbar(root).show("Please, scan card again", 3000));
+                Platform.runLater(() -> new JFXSnackbar(root).show("Re-scanner la carte", 3000));
             }
         });
     }
@@ -178,12 +178,12 @@ public class SessionController extends AbstractSession implements Initializable 
                             activity.forcePresenceUser(stud_selected.getEmail().get(), "N/A", new ApiRequest.JSONObjectListener() {
                                 @Override
                                 public void onComplete(JSONObject res) {
-                                    Platform.runLater(() -> new JFXSnackbar(root).show(stud_selected.getEmail().get() + " has been set N/A on the intranet", 2000));
+                                    Platform.runLater(() -> new JFXSnackbar(root).show(stud_selected.getEmail().get() + " a été noté n/a sur l'intranet", 2000));
                                 }
 
                                 @Override
                                 public void onFailure(String err) {
-                                    Platform.runLater(() -> new JFXSnackbar(root).show("An error occured while setting " + stud_selected.getEmail().get() + " N/A", 2000));
+                                    Platform.runLater(() -> new JFXSnackbar(root).show("Erreur lors de la notation de " + stud_selected.getEmail().get() + " en N/A", 2000));
                                 }
                             });
 
