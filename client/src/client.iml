@@ -136,5 +136,6 @@
       </library>
     </orderEntry>
     <orderEntry type="library" name="javax.mail:mail:1.4" level="project" />
+    <orderEntry type="library" name="org.codehaus.plexus:plexus-utils:3.0.24" level="project" />
   </component>
 </module>

@@ -195,7 +195,7 @@ public class ParamsController implements Initializable {
     private void applyParams() {
         Preferences.get().setAutoLogin(autolinkField.getText().toString());
         Preferences.get().setEmailList(txtarea_email_list.getText().toString());
-        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Parameters saved", 1500));
+        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Paramètres enregistrés", 1500));
         new Thread(() -> Main.mainController.activityController.refreshList()).start();
     }
 }
