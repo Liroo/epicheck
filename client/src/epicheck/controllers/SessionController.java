@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 public class SessionController extends AbstractSession implements Initializable {
     private Activity activity;
     private JSONObject activity_json;
+    private Stage stage;
 
     @FXML
     private AnchorPane root;
@@ -81,10 +82,8 @@ public class SessionController extends AbstractSession implements Initializable 
             lbl_email.setVisible(false);
             lbl_date.setVisible(false);
             if (Params.isConnected()) {
-                new JFXSnackbar(root).show("Lecteur connecté", 2000);
                 btn_connect.setText("Déconnecter le lecteur");
             } else {
-                new JFXSnackbar(root).show("Lecteur déconnecté", 2000);
                 btn_connect.setText("Connecter le lecteur");
             }
         });
@@ -140,9 +139,7 @@ public class SessionController extends AbstractSession implements Initializable 
                                 JSONObject res = new JSONObject(err);
                                 String errmsg = res.getString("message");
                                 Platform.runLater(() -> new JFXSnackbar(root).show(errmsg, 3000));
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            } catch (JSONException e) {}
                         }
                     });
 
@@ -153,7 +150,6 @@ public class SessionController extends AbstractSession implements Initializable 
 
             @Override
             public void scanError(String error) {
-                System.out.println("error = [" + error + "]");
                 Platform.runLater(() -> new JFXSnackbar(root).show("Please, scan card again", 3000));
             }
         });
@@ -249,10 +245,15 @@ public class SessionController extends AbstractSession implements Initializable 
         }
     }
 
+    @Override
+    public void setStage(Stage stage) {
+        this.stage = stage;
+    }
+
     public void connect() throws Exception {
-        if (epicheck.models.Params.isConnected())
+        if (Params.isConnected())
         {
-            epicheck.models.Params.disconnect();
+            Params.disconnect();
             new JFXSnackbar(root).show("Lecteur déconnecté", "CONNECTER", 5000, mouseEvent -> {
                 try {
                     connect();
@@ -260,7 +261,7 @@ public class SessionController extends AbstractSession implements Initializable 
             });
             btn_connect.setText("Connecter le lecteur");
         } else {
-            if (!epicheck.models.Params.connect()) {
+            if (!Params.connect()) {
                 new JFXSnackbar(root).show("Lecteur non trouvé", "CONNECTER", 5000, mouseEvent -> {
                     try {
                         connect();

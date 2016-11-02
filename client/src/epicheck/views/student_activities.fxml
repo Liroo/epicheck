@@ -14,21 +14,21 @@
         <Pane prefHeight="525.0" prefWidth="840.0">
          <children>
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#727272" height="94.0" layoutY="-1.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="840.0" />
-            <Label fx:id="titleLabel" layoutX="115.0" layoutY="21.0" prefHeight="25.0" prefWidth="189.0" text="Kévin Empociello" textFill="WHITE">
+            <Label fx:id="titleLabel" layoutX="115.0" layoutY="21.0" prefHeight="25.0" prefWidth="189.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 20;" text="Kévin Empociello" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Semibold" size="20.0" />
                </font></Label>
-            <Label fx:id="yearLabel" layoutX="116.0" layoutY="41.0" prefHeight="25.0" prefWidth="189.0" text="3ème année" textFill="WHITE">
+            <Label fx:id="yearLabel" layoutX="116.0" layoutY="41.0" prefHeight="25.0" prefWidth="189.0" style="-fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 16;" text="3ème année" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Light" size="16.0" />
                </font>
             </Label>
-            <JFXTreeTableView fx:id="tableView" layoutY="89.0" prefHeight="436.0" prefWidth="840.0" />
-            <JFXTextField fx:id="searchField" focusColor="WHITE" layoutX="608.0" layoutY="50.0" maxWidth="213.0" minWidth="213.0" onKeyReleased="#searchFilter" prefHeight="33.0" prefWidth="213.0" promptText="B5 - SQL Individual tests" style="-fx-text-fill: #FFFFFF;" unFocusColor="#dad8d8">
+            <JFXTreeTableView fx:id="tableView" layoutY="89.0" prefHeight="436.0" prefWidth="840.0" style="-fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 15;" />
+            <JFXTextField fx:id="searchField" focusColor="WHITE" layoutX="608.0" layoutY="50.0" maxWidth="213.0" minWidth="213.0" onKeyReleased="#searchFilter" prefHeight="33.0" prefWidth="213.0" style="-fx-text-fill: #FFFFFF; -fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 15;" unFocusColor="#dad8d8">
                <font>
                   <Font name="SF UI Text Light" size="16.0" />
                </font></JFXTextField>
-            <Label layoutX="550.0" layoutY="54.0" prefHeight="25.0" prefWidth="60.0" text="Filtrer :" textFill="WHITE">
+            <Label layoutX="550.0" layoutY="54.0" prefHeight="25.0" prefWidth="60.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 15;" text="Filtrer :" textFill="WHITE">
                <font>
                   <Font name="SF UI Text Light" size="16.0" />
                </font>
