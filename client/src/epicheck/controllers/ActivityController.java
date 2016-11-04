@@ -91,7 +91,6 @@ public class ActivityController implements Initializable {
         beginDate.setMinWidth(218);
         endDate.setMinWidth(218);
 
-
         name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
         module.setCellValueFactory(param -> param.getValue().getValue().getModuleTitle());
         beginDate.setCellValueFactory(param -> param.getValue().getValue().getDateFrom());
@@ -102,6 +101,7 @@ public class ActivityController implements Initializable {
         oldSessions = FXCollections.observableArrayList();
         oldSessions_cache = false;
 
+        tableView.getColumns().setAll(name, module, beginDate, endDate);
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
@@ -324,7 +324,9 @@ public class ActivityController implements Initializable {
                                         obj.getString("scholarYear"), obj.getString("codeModule"), obj.getString("codeInstance"), obj.getString("codeActi"), obj.getString("codeEvent")));
                             }
                             final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
-                            Platform.runLater(() -> tableView.setRoot(root));
+                            tableView.getColumns().setAll(name, module, beginDate, endDate);
+                            tableView.setRoot(root);
+                            tableView.setShowRoot(false);
                             oldSessions_cache = true;
                         } catch (Exception e) {
                             System.out.println(e.toString());
