@@ -97,7 +97,7 @@
 
 
 .custom-jfx-check-box{
-    -fx-checked-color: RED;
+    -fx-checked-color: #00BCD4;
     -fx-unchecked-color: BLACK;
 }
 

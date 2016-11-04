@@ -47,12 +47,12 @@
                </font>
             </Label>
             <ImageView fx:id="userPicture" fitHeight="190.0" fitWidth="160.0" layoutX="45.0" layoutY="342.0" pickOnBounds="true" />
-            <Label fx:id="loginLabel" layoutX="106.0" layoutY="545.0" style="-fx-font-family: &quot;SF UI Text Bold&quot;; -fx-font-size: 15;" text="no.name@epitech.eu">
+            <Label fx:id="loginLabel" layoutX="106.0" layoutY="545.0" style="-fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 15;" text="no.name@epitech.eu">
                <font>
                   <Font name="SF UI Text Light" size="15.0" />
                </font>
             </Label>
-            <Label fx:id="loginTitleLabel" layoutX="45.0" layoutY="545.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 15;" text="Login :">
+            <Label fx:id="loginTitleLabel" layoutX="45.0" layoutY="545.0" style="-fx-font-family: &quot;SF UI Text Bold&quot;; -fx-font-size: 15;" text="Login :">
                <font>
                   <Font name="SF UI Text Bold" size="15.0" />
                </font>

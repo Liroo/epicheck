@@ -68,7 +68,7 @@ public class PrevSessionController extends AbstractSession implements Initializa
 
     private void openFile(File file) {
         try {
-            String data = "Email,Date\n";
+            String data = "Email,Date\r\n";
             for (int i = 0; i < students.size(); i++)
                 data += students.get(i).getEmail().get() + "," + students.get(i).getExportDate().get() + "\r\n";
             Files.write(Paths.get(file.getAbsolutePath()), data.getBytes());

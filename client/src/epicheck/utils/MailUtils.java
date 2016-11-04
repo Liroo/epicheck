@@ -14,7 +14,7 @@ import java.util.Properties;
  */
 public class MailUtils {
 
-    private static String username = "";
+    private static String username = "epicheck@outlook.com";
     private static String password = "";
 
     public static void send(ApiRequest.StringListener ret, String subject, String content, ArrayList<String> emails) {
@@ -22,7 +22,7 @@ public class MailUtils {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
-            props.put("mail.smtp.host", "outlook.office365.com");
+            props.put("mail.smtp.host", "smtp-mail.outlook.com");
             props.put("mail.smtp.port", "587");
 
             Session session = Session.getInstance(props,

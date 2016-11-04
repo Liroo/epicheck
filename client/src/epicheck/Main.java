@@ -28,6 +28,8 @@ public class Main extends Application {
         // Set logger
         org.apache.log4j.BasicConfigurator.configure();
         Logger.getRootLogger().setLevel(Level.DEBUG);
+        System.setProperty( "file.encoding", "UTF-8" );
+
 
         this.primaryStage = primaryStage;
         javafx.scene.text.Font.loadFont(Main.class.getResource("/resources/fonts/SFUIText-Bold.ttf").toExternalForm(), 15);

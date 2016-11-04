@@ -8,6 +8,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -121,6 +122,7 @@ public class ApiRequest implements ApiVars {
 
     public void getActivities(JSONArrayListener call) {
         String URL = apiUrl + "activities";
+
         ApiUtils.get().exec(GET, URL, new HttpResponseHandler() {
             @Override
             public void onSuccess(int i, Map<String, List<String>> map, byte[] bytes) {
