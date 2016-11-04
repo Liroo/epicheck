@@ -3,35 +3,23 @@ package epicheck.controllers;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import epicheck.Main;
-import epicheck.models.Activity;
 import epicheck.utils.ApiRequest;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TabPane;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
-import javafx.util.Callback;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
 import java.net.URL;
 import java.text.DateFormat;
@@ -40,9 +28,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.ResourceBundle;
-
-import static java.lang.System.in;
-import static java.lang.System.load;
 
 /**
  * Created by Kevin on 15/10/2016.
@@ -90,7 +75,6 @@ public class ActivityController implements Initializable {
         beginDate.setMinWidth(218);
         endDate.setMinWidth(218);
 
-
         name.setCellValueFactory(param -> param.getValue().getValue().getActiTitle());
         module.setCellValueFactory(param -> param.getValue().getValue().getModuleTitle());
         beginDate.setCellValueFactory(param -> param.getValue().getValue().getDateFrom());
@@ -99,12 +83,11 @@ public class ActivityController implements Initializable {
         activities = FXCollections.observableArrayList();
         searchActivities = FXCollections.observableArrayList();
         oldSessions = FXCollections.observableArrayList();
-        tableView.getColumns().setAll(name, module, beginDate, endDate);
 
+        tableView.getColumns().setAll(name, module, beginDate, endDate);
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
-                System.out.println("res = [" + res + "]");
                 activities_json = res;
                 Platform.runLater(() -> {
                     try {
@@ -132,7 +115,6 @@ public class ActivityController implements Initializable {
         ApiRequest.get().getActivities(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
-                System.out.println("res = [" + res + "]");
                 old_activities_json = res;
                 Platform.runLater(() -> {
                     try {
@@ -263,6 +245,7 @@ public class ActivityController implements Initializable {
 
     public void refreshList() {
         activities.clear();
+        oldSessions.clear();
         ApiRequest.get().getActivitiesFromIntra(getToday(), getToday(), new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
@@ -292,6 +275,31 @@ public class ActivityController implements Initializable {
                 Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur de chargement des activités depuis l'intra. Vérifiez le lien d'autologin", 2000));
             }
         });
+
+        ApiRequest.get().getActivities(new ApiRequest.JSONArrayListener() {
+            @Override
+            public void onComplete(JSONArray res) {
+                old_activities_json = res;
+                Platform.runLater(() -> {
+                    try {
+                        for (int i = 0; i < res.length(); i++) {
+                            JSONObject obj = res.getJSONObject(i);
+                            oldSessions.add(new epicheck.apimodels.Activity(obj.getString("actiTitle"), obj.getString("moduleTitle"), dateFormatAPI(obj.getString("dateFrom")), dateFormatAPI(obj.getString("dateTo")),
+                                    obj.getString("scholarYear"), obj.getString("codeModule"), obj.getString("codeInstance"), obj.getString("codeActi"), obj.getString("codeEvent")));
+                        }
+                    } catch (Exception e) {
+                        System.out.println(e.toString());
+                        Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur, veuillez recharger le calendrier", 3000));
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+            }
+
+        });
+
     }
 
     public void searchFilter() throws JSONException {
@@ -331,6 +339,7 @@ public class ActivityController implements Initializable {
         btn_launch.setText(pastActivity.isSelected() ? "Aperçu" : "Lancer session");
         if (pastActivity.isSelected()) {
             final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(oldSessions, RecursiveTreeObject::getChildren);
+            tableView.getColumns().setAll(name, module, beginDate, endDate);
             Platform.runLater(() -> tableView.setRoot(root));
         } else {
             final TreeItem<epicheck.apimodels.Activity> root = new RecursiveTreeItem<>(activities, RecursiveTreeObject::getChildren);
