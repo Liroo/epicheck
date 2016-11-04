@@ -59,6 +59,9 @@ public class PrevSessionController extends AbstractSession implements Initializa
             if (!FileUtils.getExtension(file.getName()).equalsIgnoreCase("csv")) {
                 file = new File(file.getAbsolutePath() + ".csv");
             }
+            file.createNewFile();
+            file.setWritable(true);
+            file.setReadable(true);
             openFile(file);
         }
     }
