@@ -17,14 +17,14 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -153,6 +153,7 @@ public class StudentsController implements Initializable {
                 Platform.runLater(() -> new JFXSnackbar(rootPane).show("Erreur pendant le téléchargement de la liste des étudiants", 3000));
             }
         });
+
 
         studentTableView.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
             RecursiveTreeItem selectRow = (RecursiveTreeItem) studentTableView.getSelectionModel().getSelectedItem();
