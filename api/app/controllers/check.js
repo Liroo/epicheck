@@ -32,7 +32,8 @@ router.post('/', function(req, res, next) {
       date: now,
       activity: '',
       present: (req.body["present"] ? req.body["present"] : true),
-      force: (req.body["force"] ? req.body["force"] : true)
+      force: (req.body["force"] ? req.body["force"] : true),
+      hasValid: (req.body["hasValid"] ? req.body["hasValid"] : true)
     });
     Activity.findOne({
       _id: req.body["id"]

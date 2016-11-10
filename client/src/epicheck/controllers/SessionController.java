@@ -232,7 +232,7 @@ public class SessionController extends AbstractSession implements Initializable 
 
             for(int i = 0; i < studs.length(); i++) {
                 JSONObject stud = studs.getJSONObject(i);
-                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force")));
+                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force"), stud.getJSONObject("presence").getBoolean("hasValid")));
             }
 
             Platform.runLater(() -> {
