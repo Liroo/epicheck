@@ -97,7 +97,7 @@ public class PrevSessionController extends AbstractSession implements Initializa
         JFXTreeTableColumn<Student, String> check = new JFXTreeTableColumn<>("Validation");
 
 
-        email.setCellValueFactory(param -> param.getValue().getValue().getDate());
+        email.setCellValueFactory(param -> param.getValue().getValue().getEmail());
 
 //        email.setCellFactory(param -> {
 //            return new TableCell<Student, Student>() {
@@ -121,6 +121,25 @@ public class PrevSessionController extends AbstractSession implements Initializa
 //            };
 //        });
         check.setCellValueFactory(param -> param.getValue().getValue().getDate());
+
+        table.setRowFactory(new Callback<TreeTableView, TreeTableRow>() {
+            @Override
+            public TreeTableRow call(TreeTableView param) {
+                final TreeTableRow<Student> row = new TreeTableRow<Student>() {
+                    @Override
+                    protected void updateItem(Student person, boolean empty){
+                        super.updateItem(person, empty);
+                        System.out.println("hello");
+                        if (person != null && person.getDate().get().equals("17:56")) {
+                            setStyle("-fx-background-color: #DCDCDC;");
+                        }
+                    }
+                };
+                return row;
+            }
+        });
+
+        System.out.println("stop");
 
         email.setEditable(true);
         check.setEditable(true);

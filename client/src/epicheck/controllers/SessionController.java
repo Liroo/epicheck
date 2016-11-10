@@ -102,7 +102,7 @@ public class SessionController extends AbstractSession implements Initializable 
                         Date now = new Date();
                         DateFormat extern = new SimpleDateFormat("HH:mm");
                         lbl_date.setText("Validation : " + extern.format(now));
-                        img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
+                        img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
                         img_stud.setVisible(true);
                         lbl_email.setVisible(true);
                         lbl_date.setVisible(true);
@@ -214,7 +214,7 @@ public class SessionController extends AbstractSession implements Initializable 
         this.activity_json = activity_json;
 
         JFXTreeTableColumn<Student, String> email = new JFXTreeTableColumn<>("Email");
-        JFXTreeTableColumn<Student, String> check = new JFXTreeTableColumn<>("Validation");
+        JFXTreeTableColumn<Student, String> check = new JFXTreeTableColumn<>("Présence");
 
         email.setCellValueFactory(param -> param.getValue().getValue().getEmail());
         check.setCellValueFactory(param -> param.getValue().getValue().getDate());
