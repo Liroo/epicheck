@@ -18,6 +18,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableRow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
@@ -232,7 +233,7 @@ public class SessionController extends AbstractSession implements Initializable 
 
             for(int i = 0; i < studs.length(); i++) {
                 JSONObject stud = studs.getJSONObject(i);
-                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force")));
+                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force"), stud.getJSONObject("presence").getBoolean("hasValid")));
             }
 
             Platform.runLater(() -> {
@@ -246,6 +247,21 @@ public class SessionController extends AbstractSession implements Initializable 
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        table.setRowFactory(
+                param -> {
+                    return new TreeTableRow<Student>(){
+                        @Override
+                        protected void updateItem(Student item, boolean empty) {
+                            super.updateItem(item, empty);
+                            if (item != null && item.hasValid() && !item.getPresent()) {
+                                setStyle("-fx-background-color: #B2FFCC;");
+                            } else {
+                                setStyle("");
+                            }
+                        }
+                    };
+                });
     }
 
     @Override

@@ -132,7 +132,7 @@ public class StudentsController implements Initializable {
                     try {
                         for (int i = 0; i < res.length(); i++) {
                             JSONObject obj = res.getJSONObject(i);
-                            students.add(new Student(obj.getString("email"), "", false, false));
+                            students.add(new Student(obj.getString("email"), "", false, false, false));
 
                         }
                     } catch (Exception e) {
@@ -269,7 +269,6 @@ public class StudentsController implements Initializable {
         searchStudents.clear();
         studentTableView.getSelectionModel().clearSelection();
 
-
         if (searchField.getText().length() == 0) {
             final TreeItem<epicheck.apimodels.Student> root = new RecursiveTreeItem<>(students, RecursiveTreeObject::getChildren);
             Platform.runLater(() -> studentTableView.setRoot(root));
@@ -278,7 +277,7 @@ public class StudentsController implements Initializable {
         for (int i = 0; i < student_json.length(); i++) {
             JSONObject obj = student_json.getJSONObject(i);
             if (obj.getString("email").toLowerCase().contains(searchField.getText().toLowerCase())) {
-                searchStudents.add(new Student(obj.getString("email"), "",false, false));
+                searchStudents.add(new Student(obj.getString("email"), "",false, false, false));
             }
         }
         final TreeItem<epicheck.apimodels.Student> root = new RecursiveTreeItem<>(searchStudents, RecursiveTreeObject::getChildren);

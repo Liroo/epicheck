@@ -32,7 +32,7 @@ router.post('/get', function(req, res, next) {
           var stud = {
             _id: student._id,
             email: student.email,
-            presence: { date: null, present: false, force: false }
+            presence: { date: null, present: false, force: false, hasValid: false }
           };
           Presence.findOne({
             student: student,
@@ -42,6 +42,7 @@ router.post('/get', function(req, res, next) {
               stud.presence.present = presence.present;
               stud.presence.date = presence.date;
               stud.presence.force = presence.force;
+              stud.presence.hasValid = presence.hasValid;
             }
             studs.push(stud);
             callback();
@@ -86,6 +87,7 @@ function setPresence(stud, activity, studentIntra, callback) {
       if (pres) {
         pres.present = ((studentIntra.present.toString() === 'present' || studentIntra.present.toString() === 'N/A') ? true : false);
         pres.force = (studentIntra.date.toString() === 'null' && !(studentIntra.present.toString() === 'null') ? true : false);
+        pres.hasValid = true;
         pres.save(function(err) {
           callback();
         });
@@ -95,6 +97,7 @@ function setPresence(stud, activity, studentIntra, callback) {
           date: (studentIntra.date.toString() === 'null' ? now : studentIntra.date.toString()),
           present: ((studentIntra.present.toString() === 'present' || studentIntra.present.toString() === 'N/A') ? true : false),
           force: (studentIntra.date.toString() === 'null' && !(studentIntra.present.toString() === 'null') ? true : false),
+          hasValid : true,
           activity: activity
         });
         presence.save(function (err) {

@@ -24,12 +24,14 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
     private StringProperty studentYear;
     private Boolean present;
     private Boolean force;
+    private Boolean hasValid;
 
-    public Student(String email, String date, Boolean present, Boolean force) {
+    public Student(String email, String date, Boolean present, Boolean force, Boolean hasValid) {
         this.email = new SimpleStringProperty(email);
         this.date = new SimpleStringProperty(date);
         this.present = present;
         this.force = force;
+        this.hasValid = hasValid;
     }
 
     public Boolean getPresent() {
@@ -40,7 +42,14 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
         return force;
     }
 
+    public Boolean hasValid() {
+        return hasValid;
+    }
+
     public StringProperty getDate() {
+        if (hasValid && !present) {
+            return (new SimpleStringProperty("absent"));
+        }
         if (date.get().equals("null"))
             return (new SimpleStringProperty(""));
         try {
