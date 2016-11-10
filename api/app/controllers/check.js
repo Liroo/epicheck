@@ -25,12 +25,14 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   if (req.body["id"] && req.body["email"]) {
     var now = new Date();
-    now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 2, now.getUTCMinutes(), now.getUTCSeconds())
+    now = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours() + 1, now.getUTCMinutes(), now.getUTCSeconds())
     //now.setTime(now.getTime() - now.getTimezoneOffset()*60*1000 );
     var presence = new Presence({
       student: '',
       date: now,
-      activity: ''
+      activity: '',
+      present: (req.body["present"] ? req.body["present"] : true),
+      force: (req.body["force"] ? req.body["force"] : true)
     });
     Activity.findOne({
       _id: req.body["id"]

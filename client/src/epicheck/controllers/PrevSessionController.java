@@ -9,10 +9,15 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.TableCell;
 import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableRow;
+import javafx.scene.control.TreeTableView;
+import javafx.scene.control.cell.TreeItemPropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Callback;
 import org.codehaus.plexus.util.FileUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -91,7 +96,30 @@ public class PrevSessionController extends AbstractSession implements Initializa
         JFXTreeTableColumn<Student, String> email = new JFXTreeTableColumn<>("Email");
         JFXTreeTableColumn<Student, String> check = new JFXTreeTableColumn<>("Validation");
 
-        email.setCellValueFactory(param -> param.getValue().getValue().getEmail());
+
+        email.setCellValueFactory(param -> param.getValue().getValue().getDate());
+
+//        email.setCellFactory(param -> {
+//            return new TableCell<Student, Student>() {
+//                @Override
+//                protected void updateItem(Student item, boolean empty) {
+//                    super.updateItem(item, empty);
+//                    if (item == null || empty) {
+//                        setText(null);
+//                        setStyle("");
+//                    } else {
+//                        // Format date.
+//                        setText(item.getEmail().toString());
+//                        // Style all dates in March with a different color.
+//                        if (item.getForce()) {
+//                            setStyle("-fx-background-color: red");
+//                        } else {
+//                            setStyle("");
+//                        }
+//                    }
+//                }
+//            };
+//        });
         check.setCellValueFactory(param -> param.getValue().getValue().getDate());
 
         email.setEditable(true);
@@ -107,7 +135,7 @@ public class PrevSessionController extends AbstractSession implements Initializa
 
             for(int i = 0; i < studs.length(); i++) {
                 JSONObject stud = studs.getJSONObject(i);
-                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date")));
+                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force")));
             }
 
             Platform.runLater(() -> {
@@ -119,6 +147,7 @@ public class PrevSessionController extends AbstractSession implements Initializa
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
     }
 
     @Override

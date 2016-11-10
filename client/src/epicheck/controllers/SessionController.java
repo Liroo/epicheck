@@ -67,7 +67,10 @@ public class SessionController extends AbstractSession implements Initializable 
     private JFXButton btn_connect;
 
     @FXML
-    private JFXCheckBox chkbox_email;
+    private JFXToggleButton toggle_email;
+
+    @FXML
+    private JFXToggleButton toggle_absent;
 
     private ObservableList<Student> students;
 
@@ -229,7 +232,7 @@ public class SessionController extends AbstractSession implements Initializable 
 
             for(int i = 0; i < studs.length(); i++) {
                 JSONObject stud = studs.getJSONObject(i);
-                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date")));
+                students.add(new Student(stud.getString("email"), stud.getJSONObject("presence").getString("date"), stud.getJSONObject("presence").getBoolean("present"), stud.getJSONObject("presence").getBoolean("force")));
             }
 
             Platform.runLater(() -> {
@@ -283,22 +286,21 @@ public class SessionController extends AbstractSession implements Initializable 
     @FXML
     private void endSession() {
 
-        if (chkbox_email.isSelected()) {
-            Preferences.get().getEmailList();
-            ArrayList<String> emails = new ArrayList<>();
-            Collections.addAll(emails, Preferences.get().getEmailList().split("\\n"));
+        Preferences.get().getEmailList();
+        ArrayList<String> emails = new ArrayList<>();
+        Collections.addAll(emails, Preferences.get().getEmailList().split("\\n"));
 
-            ArrayList<String> abs_students = new ArrayList<>();
+        ArrayList<String> abs_students = new ArrayList<>();
 
-            for (int i = 0; i < students.size(); i++) {
-                if (students.get(i).getDate().get().length() == 0)
-                    abs_students.add(students.get(i).getEmail().get());
-            }
+        for (int i = 0; i < students.size(); i++) {
+            if (students.get(i).getDate().get().length() == 0)
+                abs_students.add(students.get(i).getEmail().get());
+        }
 
-            String content_master = "Bonjour,\n\nVoici la liste des étudiants absents à l'activité : " + activity.getActiTitle().get() + ".\n\n";
+        String content_master = "Bonjour,\n\nVoici la liste des étudiants absents à l'activité : " + activity.getActiTitle().get() + ".\n\n";
 
+        if (toggle_absent.isSelected()) {
             for (int i = 0; i < abs_students.size(); i++) {
-                content_master += "- " + abs_students.get(i) + "\n";
                 activity.forcePresenceUser(abs_students.get(i), "absent", new ApiRequest.JSONObjectListener() {
                     @Override
                     public void onComplete(JSONObject res) {
@@ -309,37 +311,90 @@ public class SessionController extends AbstractSession implements Initializable 
                     }
                 });
             }
-            if (abs_students.size() == 0)
-                content_master += "Aucun étudiant absent.\n";
-            content_master += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
+        }
 
+        for (int i = 0; i < abs_students.size(); i++) {
+            content_master += "- " + abs_students.get(i) + "\n";
+        }
+
+        if (abs_students.size() == 0)
+            content_master += "Aucun étudiant absent.\n";
+        content_master += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
+
+        if (toggle_email.isSelected()) {
             MailUtils.send(new ApiRequest.StringListener() {
                 @Override
                 public void onComplete(String res) {
-                    String student_content = "Bonjour,\n\nVous n'avez pas validé votre présence à l'activité " + activity.getActiTitle().get() + ".\n\nRapprochez vous de la pédagogie pour justifier cette absence.\n";
-                    student_content += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
-                    for (int i = 0; i < abs_students.size(); i++) {
-                        final int cur_pos = i;
-                        MailUtils.send(new ApiRequest.StringListener() {
-                            @Override
-                            public void onComplete(String res) {}
-
-                            @Override
-                            public void onFailure(String err) {
-                            }
-                        }, "[EPICHECK]Absence activité", student_content, abs_students.get(i));
-                    }
                 }
 
                 @Override
                 public void onFailure(String err) {
-                    Platform.runLater(() -> new JFXSnackbar(root).show("Echec lors de l'envoi du mail d'absence.", 2000));
                 }
             }, "[EPICHECK]Liste des étudiants absents", content_master, emails);
+
+            String student_content = "Bonjour,\n\nVous n'avez pas validé votre présence à l'activité " + activity.getActiTitle().get() + ".\n\nRapprochez vous de la pédagogie pour justifier cette absence.\n";
+            student_content += "\n\n##########\nCeci est un message automatique, merci de ne pas répondre.";
+
+            MailUtils.send(new ApiRequest.StringListener() {
+                @Override
+                public void onComplete(String res) {
+                }
+
+                @Override
+                public void onFailure(String err) {
+                }
+            }, "[EPICHECK]Absence activité", student_content, abs_students);
         }
 
-        Stage stage = (Stage) chkbox_email.getScene().getWindow();
+        Stage stage = (Stage) toggle_email.getScene().getWindow();
         stage.close();
     }
 
+    public void refresh() {
+
+        activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
+            @Override
+            public void onComplete(JSONArray res) {
+                ApiRequest.get().addActivity(activity.getActiTitle().get(), activity.getDateFrom().get(), activity.getDateTo().get(), activity.getModuleTitle().get(), activity.getScholarYear().get(), activity.getCodeModule().get(), activity.getCodeInstance().get(), activity.getCodeActi().get(), activity.getCodeEvent().get(), res, new ApiRequest.JSONObjectListener() {
+
+                    @Override
+                    public void onComplete(JSONObject res) {
+                        ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                            @Override
+                            public void onComplete(JSONObject res) {
+                                setParams(activity, res);
+                                Platform.runLater(() -> new JFXSnackbar(root).show("Rafraîchissement terminé", 3000));
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                Platform.runLater(() -> new JFXSnackbar(root).show("Erreur lors du rafraîchissement", 3000));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(String err) {
+                        ApiRequest.get().getActivity(activity.getCodeActi().get(), activity.getCodeEvent().get(), new ApiRequest.JSONObjectListener() {
+                            @Override
+                            public void onComplete(JSONObject res) {
+                                setParams(activity, res);
+                                Platform.runLater(() -> new JFXSnackbar(root).show("Rafraîchissement terminé", 3000));
+                            }
+
+                            @Override
+                            public void onFailure(String err) {
+                                Platform.runLater(() -> new JFXSnackbar(root).show("Erreur lors du rafraîchissement", 3000));
+                            }
+                        });
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Platform.runLater(() -> new JFXSnackbar(root).show("Erreur lors du rafraîchissement", 3000));
+            }
+        });
+    }
 }
