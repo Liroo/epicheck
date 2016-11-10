@@ -46,9 +46,13 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
         return hasValid;
     }
 
+    public void setValid(Boolean v) { this.hasValid = v; }
+
+    public void setPresent(Boolean p) { this.present = p; }
+
     public StringProperty getDate() {
         if (hasValid && !present) {
-            return (new SimpleStringProperty("absent"));
+            return (new SimpleStringProperty("Absent"));
         }
         if (date.get().equals("null"))
             return (new SimpleStringProperty(""));

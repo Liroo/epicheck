@@ -103,7 +103,7 @@ public class SessionController extends AbstractSession implements Initializable 
                         Date now = new Date();
                         DateFormat extern = new SimpleDateFormat("HH:mm");
                         lbl_date.setText("Validation : " + extern.format(now));
-                        img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
+                        img_stud.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
                         img_stud.setVisible(true);
                         lbl_email.setVisible(true);
                         lbl_date.setVisible(true);
@@ -113,8 +113,11 @@ public class SessionController extends AbstractSession implements Initializable 
                         @Override
                         public void onComplete(JSONObject res) {
                             for(int i = 0; i < students.size(); i++) {
-                                if (students.get(i).getEmail().get().equals(studentEmail))
+                                if (students.get(i).getEmail().get().equals(studentEmail)) {
+                                    students.get(i).setValid(true);
+                                    students.get(i).setPresent(true);
                                     students.get(i).setDate();
+                                }
                             }
 
                             activity.forcePresenceUser(studentEmail, "present", new ApiRequest.JSONObjectListener() {
@@ -132,7 +135,6 @@ public class SessionController extends AbstractSession implements Initializable 
                             Platform.runLater(() -> {
                                 TreeItem<Student> root = new RecursiveTreeItem<>(students, RecursiveTreeObject::getChildren);
                                 table.getRoot().getChildren().clear();
-                                table.getRoot().getChildren().addAll(root);
                                 table.setRoot(root);
                             });
                         }
@@ -175,8 +177,12 @@ public class SessionController extends AbstractSession implements Initializable 
                     public void onComplete(JSONObject res) {
                         Platform.runLater(() -> {
                             for(int i1 = 0; i1 < students.size(); i1++) {
-                                if (students.get(i1).getEmail().get().equals(stud_selected.getEmail().get()))
+                                if (students.get(i1).getEmail().get().equals(stud_selected.getEmail().get())) {
                                     students.get(i1).setDate("null");
+                                    students.get(i1).setValid(false);
+                                    students.get(i1).setPresent(false);
+                                }
+
                             }
 
                             activity.forcePresenceUser(stud_selected.getEmail().get(), "N/A", new ApiRequest.JSONObjectListener() {
@@ -254,8 +260,10 @@ public class SessionController extends AbstractSession implements Initializable 
                         @Override
                         protected void updateItem(Student item, boolean empty) {
                             super.updateItem(item, empty);
-                            if (item != null && item.hasValid() && !item.getPresent()) {
+                            if (item != null && item.hasValid() && item.getPresent()) {
                                 setStyle("-fx-background-color: #B2FFCC;");
+                            } else if (item != null && item.hasValid() && !item.getPresent()) {
+                                setStyle("-fx-background-color: #DCDCDC;");
                             } else {
                                 setStyle("");
                             }

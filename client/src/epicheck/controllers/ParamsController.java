@@ -91,7 +91,7 @@ public class ParamsController implements Initializable {
 
                     Platform.runLater(() -> {
                         loginLabel.setText(studentEmail);
-                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
+                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
                     });
 
                 } catch (Exception e) {
@@ -128,7 +128,7 @@ public class ParamsController implements Initializable {
 
                     Platform.runLater(() -> {
                         loginLabel.setText(studentEmail);
-                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".bmp"));
+                        userPicture.setImage(new Image("https://cdn.local.epitech.eu/userprofil/profilview/" + studentEmail.substring(0, studentEmail.indexOf('@')) + ".jpg"));
                     });
 
                 } catch (Exception e) {
