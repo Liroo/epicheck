@@ -125,14 +125,15 @@ router.get('/get/:email', function (req, res, next){
             codeInstance: activity.codeInstance,
             codeActi: activity.codeActi,
             codeEvent: activity.codeEvent,
-            presence: { date: null, valid: false }
+            presence: { date: null, present: false, force: false }
           }
           Presence.findOne({
             student: student,
             activity: activity
           }).exec(function (err, presence) {
             if (presence) {
-              acti.presence.valid = true;
+              acti.presence.present = presence.present;
+              acti.presence.force = presence.force;
               acti.presence.date = presence.date;
             }
             activities.push(acti);

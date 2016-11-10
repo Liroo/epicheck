@@ -223,6 +223,7 @@ public class ActivityController implements Initializable {
         activity.getRegisteredStudents(new ApiRequest.JSONArrayListener() {
             @Override
             public void onComplete(JSONArray res) {
+                System.out.println("prev res = " + res);
                 Platform.runLater(() -> {
                     try {
                         if (pastActivity.isSelected())

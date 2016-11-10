@@ -163,6 +163,8 @@ public class ApiRequest implements ApiVars {
         for (int i = 0; i < students.length(); i++) {
             try {
                 params.put("students[" + i + "][login]", students.getJSONObject(i).getString("login"));
+                params.put("students[" + i + "][date]", students.getJSONObject(i).getString("date_modif"));
+                params.put("students[" + i + "][present]", students.getJSONObject(i).getString("present"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXCheckBox?>
+<?import com.jfoenix.controls.JFXToggleButton?>
 <?import com.jfoenix.controls.JFXTreeTableView?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.image.ImageView?>
@@ -16,11 +16,12 @@
             <Label fx:id="lbl_email" layoutX="103.0" layoutY="397.0" style="-fx-font-family: &quot;SF UI Text Bold&quot;; -fx-font-size: 17;" text="Label" />
             <Label fx:id="lbl_date" layoutX="103.0" layoutY="443.0" style="-fx-font-family: &quot;SF UI Text Regular&quot;; -fx-font-size: 15;" text="Label" />
             <JFXTreeTableView fx:id="table" layoutX="500.0" layoutY="20.0" prefHeight="465.0" prefWidth="480.0" style="-fx-font-family: &quot;SF UI Text Light&quot;; -fx-font-size: 15;" />
-            <JFXButton fx:id="btn_connect" layoutX="103.0" layoutY="540.0" mnemonicParsing="false" onAction="#connect" prefHeight="48.0" prefWidth="295.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Connecter le lecteur" textFill="WHITE" />
+            <JFXButton fx:id="btn_connect" layoutX="260.0" layoutY="540.0" mnemonicParsing="false" onAction="#connect" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Connecter le lecteur" textFill="WHITE" />
+            <JFXButton fx:id="btn_refresh" layoutX="14.0" layoutY="540.0" mnemonicParsing="false" onAction="#refresh" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Rafrachir" textFill="WHITE" />
             <JFXButton fx:id="btn_delete" layoutX="760.0" layoutY="540.0" mnemonicParsing="false" onAction="#deleteEntry" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Supprimer la sélection" textFill="WHITE" />
             <JFXButton fx:id="btn_end_session" layoutX="500.0" layoutY="540.0" mnemonicParsing="false" onAction="#endSession" prefHeight="48.0" prefWidth="220.0" style="-fx-background-color: #00BCD4; -fx-font-size: 16; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Fin de session" textFill="WHITE" />
-            <JFXCheckBox fx:id="chkbox_email" checkedColor="#00bcd4" layoutX="490.0" layoutY="495.0" mnemonicParsing="false" style="-fx-font-family: &quot;SF UI Text Bold&quot;; -fx-font-size: 14;" text="Send emails" />
-
+            <JFXToggleButton fx:id="toggle_email" layoutX="500.0" layoutY="484.0" mnemonicParsing="false" style="-fx-font-family: &quot;SF UI Text Bold&quot;; -fx-font-size: 14;" text="Envoyer les emails" toggleColor="#00bcd4" toggleLineColor="#00bed4a2" />
+            <JFXToggleButton fx:id="toggle_absent" layoutX="768.0" layoutY="485.0" mnemonicParsing="false" style="-fx-font-size: 14; -fx-font-family: &quot;SF UI Text Bold&quot;;" text="Forcer les absences" toggleColor="#00bcd4" toggleLineColor="#00bed4a2" />
          </children></Pane>
    </children>
 </AnchorPane>

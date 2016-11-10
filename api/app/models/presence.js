@@ -7,6 +7,18 @@ var PresenceSchema = new Schema({
     default: Date.now,
     required: true
   },
+  present: {
+    type: Boolean,
+    default: false
+  },
+  hasValid: {
+    type: Boolean,
+    default: false
+  },
+  force: {
+    type: Boolean,
+    default: false
+  },
   student: {
     type: Schema.Types.ObjectId,
     ref: 'Student'

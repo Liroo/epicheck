@@ -1,6 +1,7 @@
 package epicheck.apimodels;
 
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
+import javafx.beans.Observable;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -21,10 +22,22 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
     private StringProperty title;
     private StringProperty pictureUrl;
     private StringProperty studentYear;
+    private Boolean present;
+    private Boolean force;
 
-    public Student(String email, String date) {
+    public Student(String email, String date, Boolean present, Boolean force) {
         this.email = new SimpleStringProperty(email);
         this.date = new SimpleStringProperty(date);
+        this.present = present;
+        this.force = force;
+    }
+
+    public Boolean getPresent() {
+        return present;
+    }
+
+    public Boolean getForce() {
+        return force;
     }
 
     public StringProperty getDate() {
@@ -41,6 +54,9 @@ public class Student extends RecursiveTreeObject<Student> implements Cloneable {
     }
 
     public StringProperty getExportDate() {
+        if (this.force) {
+            return new SimpleStringProperty("Presence forcée");
+        }
         try {
             DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             DateFormat extern = new SimpleDateFormat("dd-MM-yyyy HH:mm");

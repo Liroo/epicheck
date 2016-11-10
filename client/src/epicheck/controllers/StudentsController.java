@@ -135,7 +135,8 @@ public class StudentsController implements Initializable {
                     try {
                         for (int i = 0; i < res.length(); i++) {
                             JSONObject obj = res.getJSONObject(i);
-                            students.add(new Student(obj.getString("email"), ""));
+                            students.add(new Student(obj.getString("email"), "", false, false));
+
                         }
                     } catch (Exception e) {
                         System.out.println("Failed parsing JSON");
@@ -279,7 +280,7 @@ public class StudentsController implements Initializable {
         for (int i = 0; i < student_json.length(); i++) {
             JSONObject obj = student_json.getJSONObject(i);
             if (obj.getString("email").toLowerCase().contains(searchField.getText().toLowerCase())) {
-                searchStudents.add(new Student(obj.getString("email"), ""));
+                searchStudents.add(new Student(obj.getString("email"), "",false, false));
             }
         }
         final TreeItem<epicheck.apimodels.Student> root = new RecursiveTreeItem<>(searchStudents, RecursiveTreeObject::getChildren);
