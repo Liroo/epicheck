@@ -103,7 +103,9 @@ public class PrevSessionController extends AbstractSession implements Initializa
                     @Override
                     protected void updateItem(Student item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (item != null && item.hasValid() && !item.getPresent()) {
+                        if (item != null && item.hasValid() && item.getPresent()) {
+                            setStyle("-fx-background-color: #B2FFCC;");
+                        } else if (item != null && item.hasValid() && !item.getPresent()) {
                             setStyle("-fx-background-color: #DCDCDC;");
                         } else {
                             setStyle("");

@@ -8,6 +8,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -147,13 +151,26 @@ public class ApiRequest implements ApiVars {
         });
     }
 
+    private String dateFormatIntra(String date) {
+        try {
+            DateFormat format = new SimpleDateFormat("dd-MM-yyyy HH:mm");
+            DateFormat extern = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date_ret = format.parse(date);
+            return (extern.format(date_ret));
+        } catch (ParseException e) {
+            return ("");
+        }
+    }
+
+
+
     public void addActivity(String actiTitle, String dateFrom, String dateTo, String moduleTitle, String scholarYear, String codeModule, String codeInstance,
                             String codeActi, String codeEvent, JSONArray students, JSONObjectListener call) {
         String URL = apiUrl + "activities/add";
         RequestParams params = new RequestParams();
         params.put("actiTitle", actiTitle);
-        params.put("dateFrom", dateFrom);
-        params.put("dateTo", dateTo);
+        params.put("dateFrom", dateFormatIntra(dateFrom));
+        params.put("dateTo", dateFormatIntra(dateTo));
         params.put("moduleTitle", moduleTitle);
         params.put("scholarYear", scholarYear);
         params.put("codeModule", codeModule);
