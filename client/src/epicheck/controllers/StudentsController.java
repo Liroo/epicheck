@@ -255,6 +255,7 @@ public class StudentsController implements Initializable {
         if (selectRow != null) {
             Student student = (Student) selectRow.getValue();
             try {
+
                 t.setStudent((Student) student.clone());
             } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
