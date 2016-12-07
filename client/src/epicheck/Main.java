@@ -15,8 +15,12 @@ import javax.smartcardio.Card;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.security.GeneralSecurityException;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 
 public class Main extends Application {
 
@@ -62,7 +66,27 @@ public class Main extends Application {
     }
 
     private void TrustAllHttpsDomain() throws NoSuchAlgorithmException, KeyManagementException {
-       HttpsURLConnection.setDefaultHostnameVerifier((s, sslSession) -> true);
+
+       TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+       };
+
+       try {
+           SSLContext sc = SSLContext.getInstance("SSL");
+           sc.init(null, trustAllCerts, new java.security.SecureRandom());
+           HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+       } catch (GeneralSecurityException e) {
+       }
     }
 
 }
